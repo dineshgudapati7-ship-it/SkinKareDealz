@@ -44,7 +44,7 @@ Every `python -m skd.run` also fetches the Purplle brand pages for the brands in
 `track.cmd` runs this in record-only mode (`--dry-run`) and appends the output to `logs/track.log`. Schedule it every 3 hours with Windows Task Scheduler.
 
 ## Running on GitHub Actions
-`.github/workflows/track.yml` runs the tracker every 6 hours (IST 05:47, 11:47, 17:47, 23:47; GitHub's cron often starts 10–30 min late). It replaces the Windows task. Maccaron is refetched every 12 hours (`--maccaron-every 12`) to stay inside the 2,000 free minutes of a private repo.
+`.github/workflows/track.yml` runs the tracker every 6 hours (IST 05:47, 11:47, 17:47, 23:47; GitHub's cron often starts 10–30 min late). It replaces the Windows task. Each run takes about 6 minutes, roughly 720 of the 2,000 free minutes a month for a private repo. **Maccaron is not fetched in the cloud.** It returns 403 to GitHub's datacenter IPs, while the same page returns 200 from a home connection.
 
 - **State:** `prices.db` lives on the `data` branch as a single commit, force-pushed after each run. The run fails rather than starting an empty DB, and it refuses to save a DB that has fewer rows than it restored. To get a local copy: `git fetch origin data && git show origin/data:prices.db > data/prices.db`.
 - **Manual run:** Actions tab → "price tracking" → Run workflow.
