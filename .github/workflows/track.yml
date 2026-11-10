@@ -1,0 +1,83 @@
+# Price tracking on GitHub Actions (replaces the Windows "SkinKareDealz price tracking" task).
+#
+# State: data/prices.db lives on the orphan branch `data` as ONE commit that is
+# force-pushed after each run, so git history doesn't grow by ~1.5 MB per run.
+#
+# Budget (private repo = 2,000 free minutes/month): 4 runs/day. Purplle every run
+# (~6 min), Maccaron every 12 h (~15 min) -> ~1,600 min/month.
+name: price tracking
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"        # UTC 00:17, 06:17, 12:17, 18:17 = IST 05:47, 11:47, 17:47, 23:47
+  workflow_dispatch:
+
+concurrency:
+  group: price-tracking           # never two runs writing prices.db at once
+  cancel-in-progress: false
+
+permissions:
+  contents: write                 # push the `data` branch
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Restore prices.db from the data branch
+        run: |
+          # Fail instead of starting an empty DB: pushing an empty DB would wipe the history.
+          git fetch --depth=1 origin data
+          git show origin/data:prices.db > data/prices.db
+          python - <<'PY'
+          import sqlite3
+          c = sqlite3.connect("data/prices.db")
+          assert c.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+          n = c.execute("SELECT COUNT(*) FROM price_checks").fetchone()[0]
+          print(f"restored {n} price rows")
+          open("rows_before.txt", "w").write(str(n))
+          PY
+
+      - name: Run tracker (record prices only)
+        env:
+          AMAZON_TAG: ${{ vars.AMAZON_TAG }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+          KEEPA_KEY: ${{ secrets.KEEPA_KEY }}
+        # --dry-run: nothing is posted. Remove it here when you want auto-posting.
+        run: python -m skd.run --dry-run --maccaron-delay 1 --maccaron-every 12 2>&1 | tee run.log
+
+      - name: Summary
+        if: always()
+        run: |
+          grep -vE '^\s+-\s' run.log > summary.txt || true
+          cat summary.txt
+          { echo '```'; cat summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save prices.db to the data branch
+        # Runs even if the tracker crashed part-way: rows it committed are still worth keeping.
+        if: always() && hashFiles('rows_before.txt') != ''
+        run: |
+          python - <<'PY'
+          import sqlite3
+          c = sqlite3.connect("data/prices.db")
+          assert c.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+          before = int(open("rows_before.txt").read())
+          after = c.execute("SELECT COUNT(*) FROM price_checks").fetchone()[0]
+          assert after >= before, f"row count shrank {before} -> {after}; not saving"
+          print(f"price rows {before} -> {after} (+{after - before})")
+          PY
+          tmp=$(mktemp -d)
+          cp data/prices.db "$tmp/"
+          cd "$tmp"
+          git init -q -b data
+          git add prices.db
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -qm "prices.db after run ${{ github.run_number }} ($(date -u +%FT%TZ))"
+          git push -fq "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data

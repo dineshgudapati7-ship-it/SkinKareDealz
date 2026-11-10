@@ -1,0 +1,445 @@
+tier,brand,maccaron_id,name,url,price,in_stock,ean
+4,Bioderma,17119,Hydrabio Tonique 250ml (+20ea cotton pads),https://maccaron.in/en/products/bioderma_hydrabio-tonique-250ml-20ea-cotton-pads/17119,3028.0,False,
+4,Bioderma,17499,Sebium Lotion 200 ml,https://maccaron.in/en/products/bioderma_sebium-lotion-200-ml/17499,2460.0,False,
+4,Bioderma,17547,Hydrabio Toner 250ml,https://maccaron.in/en/products/bioderma_hydrabio-toner-250ml/17547,2172.0,False,
+4,Bioderma,17549,Sensibio Tonique 250ml,https://maccaron.in/en/products/bioderma_sensibio-tonique-250ml/17549,2172.0,False,
+4,Bioderma,17613,Hydrabio Essence Lotion 200ml Set (+5 Coin Masks),https://maccaron.in/en/products/bioderma_hydrabio-essence-lotion-200ml-set-5-coin-masks/17613,2748.0,False,
+4,Bioderma,17642,Hydrabio Gel Cream Duo (40ml*2),https://maccaron.in/en/products/bioderma_hydrabio-gel-cream-duo-40ml2/17642,4492.0,False,
+4,Bioderma,17652,Sensibio Defensive Serum 30ml,https://maccaron.in/en/products/bioderma_sensibio-defensive-serum-30ml/17652,3980.0,False,
+4,Bioderma,17695,Atoderm Intensive Baume  Set (500ml+75ml),https://maccaron.in/en/products/bioderma_atoderm-intensive-baume-set-500ml75ml/17695,5652.0,False,
+4,Bioderma,17793,Atoderm Intensive Balm 500ml,https://maccaron.in/en/products/bioderma_atoderm-intensive-balm-500ml/17793,3980.0,False,
+4,Bioderma,17871,Sensibio Defensive 40ml,https://maccaron.in/en/products/bioderma_sensibio-defensive-40ml/17871,2268.0,False,
+4,Bioderma,17872,Sensibio Defensive Rich 40ml,https://maccaron.in/en/products/bioderma_sensibio-defensive-rich-40ml/17872,2268.0,False,
+4,Bioderma,17951,Cicabio Day Repair Cream 30ml,https://maccaron.in/en/products/bioderma_cicabio-day-repair-cream-30ml/17951,2268.0,False,
+4,Bioderma,17956,Hydravio Essence Lotion 200ml (Cosmetic Som),https://maccaron.in/en/products/bioderma_hydravio-essence-lotion-200ml-cosmetic-som/17956,2748.0,False,
+4,Bioderma,17965,Hydravio SerumSuo (40ml*2),https://maccaron.in/en/products/bioderma_hydravio-serumsuo-40ml2/17965,4364.0,False,
+4,Bioderma,18014,Atoderm Intensive Gel Cream 200ml,https://maccaron.in/en/products/bioderma_atoderm-intensive-gel-cream-200ml/18014,2556.0,False,
+4,Bioderma,18054,Atoderm Intensive Balm 75ml,https://maccaron.in/en/products/bioderma_atoderm-intensive-balm-75ml/18054,1228.0,False,
+4,Bioderma,18058,Hydrabio Essence Lotion Duo (200ml*2),https://maccaron.in/en/products/bioderma_hydrabio-essence-lotion-duo-200ml2/18058,4548.0,False,
+4,Bioderma,18075,ABCDerm Peri-oral 40ml,https://maccaron.in/en/products/bioderma_abcderm-peri-oral-40ml/18075,1036.0,False,
+4,Bioderma,18079,Cicabio Pommade 100ml,https://maccaron.in/en/products/bioderma_cicabio-pommade-100ml/18079,2932.0,False,
+4,Bioderma,18080,Sebium Night Peel 40ml,https://maccaron.in/en/products/bioderma_sebium-night-peel-40ml/18080,2556.0,False,
+4,Bioderma,18110,Hydrabio Gel Cream 40ml,https://maccaron.in/en/products/bioderma_hydrabio-gel-cream-40ml/18110,2364.0,False,
+4,Bioderma,18111,Hydrabio Essence Lotion 200ml,https://maccaron.in/en/products/bioderma_hydrabio-essence-lotion-200ml/18111,2748.0,False,
+4,Bioderma,18112,Hydrabio Cream 50ml,https://maccaron.in/en/products/bioderma_hydrabio-cream-50ml/18112,2556.0,False,
+4,Bioderma,18147,Cicabio Pommade 40ml,https://maccaron.in/en/products/bioderma_cicabio-pommade-40ml/18147,1796.0,False,
+4,Bioderma,18150,Hydrabio Serum 40ml,https://maccaron.in/en/products/bioderma_hydrabio-serum-40ml/18150,3220.0,False,
+4,Bioderma,18784,Photodom AKN MAT SPF30 40ml,https://maccaron.in/en/products/bioderma_photodom-akn-mat-spf30-40ml/18784,2268.0,False,
+4,Bioderma,18785,Photodom Cream SPF50+ 40ml,https://maccaron.in/en/products/bioderma_photodom-cream-spf50-40ml/18785,2268.0,False,
+4,Bioderma,18786,Photodom Aqua Fluid SPF50 40ml,https://maccaron.in/en/products/bioderma_photodom-aqua-fluid-spf50-40ml/18786,2268.0,False,
+4,Bioderma,18787,Photodum Kid SPF50+ 100ml,https://maccaron.in/en/products/bioderma_photodum-kid-spf50-100ml/18787,2556.0,False,
+4,Bioderma,18974,Sebium Foaming Gel 200ml+100ml,https://maccaron.in/en/products/bioderma_sebium-foaming-gel-200ml100ml/18974,2364.0,False,
+4,Bioderma,19080,Sebium Foaming Gel 200ml,https://maccaron.in/en/products/bioderma_sebium-foaming-gel-200ml/19080,1228.0,False,
+4,Bioderma,19179,Sensibio Foaming Gel 200ml,https://maccaron.in/en/products/bioderma_sensibio-foaming-gel-200ml/19179,1892.0,False,
+4,Bioderma,19180,Sebium Foaming Gel 500ml,https://maccaron.in/en/products/bioderma_sebium-foaming-gel-500ml/19180,2460.0,False,
+4,Bioderma,19210,Sensibio Michella Cleansing Oil 150ml,https://maccaron.in/en/products/bioderma_sensibio-michella-cleansing-oil-150ml/19210,2460.0,False,
+4,Bioderma,19262,Sensibio H2O EYE 125ml,https://maccaron.in/en/products/bioderma_sensibio-h2o-eye-125ml/19262,1132.0,False,
+4,Bioderma,19327,Sensibio H2O Micellar Water 850ml,https://maccaron.in/en/products/bioderma_sensibio-h2o-micellar-water-850ml/19327,2709.0,False,
+4,Bioderma,19914,Atoderm Huile de Douche 1L,https://maccaron.in/en/products/bioderma_atoderm-huile-de-douche-1l/19914,3141.0,False,
+4,Bioderma,19924,ABC Derm Gel Moussant 1L+200ml,https://maccaron.in/en/products/bioderma_abc-derm-gel-moussant-1l200ml/19924,3613.0,False,
+4,Bioderma,19934,ABC Derm Huile Douceur 200ml,https://maccaron.in/en/products/bioderma_abc-derm-huile-douceur-200ml/19934,2748.0,False,
+4,Bioderma,19941,Atoderm Gel Douche 500ml,https://maccaron.in/en/products/bioderma_atoderm-gel-douche-500ml/19941,2460.0,False,
+4,Bioderma,19943,ABC Derm Gel Moussant 200ml,https://maccaron.in/en/products/bioderma_abc-derm-gel-moussant-200ml/19943,1412.0,False,
+4,Bioderma,19946,Atoderm Gel Douche 200ml,https://maccaron.in/en/products/bioderma_atoderm-gel-douche-200ml/19946,1604.0,False,
+4,Bioderma,20001,Atoderm Ultra Cream 500ml,https://maccaron.in/en/products/bioderma_atoderm-ultra-cream-500ml/20001,3412.0,False,
+4,Bioderma,20024,Atoderm Ultra Cream 500ml+200ml,https://maccaron.in/en/products/bioderma_atoderm-ultra-cream-500ml200ml/20024,3412.0,False,
+4,Bioderma,20112,Atoderm Intensive Gel Cream 500ml,https://maccaron.in/en/products/bioderma_atoderm-intensive-gel-cream-500ml/20112,3692.0,False,
+4,Bioderma,20180,ABC Derm Change Intensif 75g,https://maccaron.in/en/products/bioderma_abc-derm-change-intensif-75g/20180,1324.0,False,
+4,Bioderma,20181,ABC Derm Cold Cream 200ml,https://maccaron.in/en/products/bioderma_abc-derm-cold-cream-200ml/20181,1796.0,False,
+4,Bioderma,20224,Atoderm Preventive 200ml,https://maccaron.in/en/products/bioderma_atoderm-preventive-200ml/20224,3124.0,False,
+4,Bioderma,20226,Atoderm PP Balm 200ml,https://maccaron.in/en/products/bioderma_atoderm-pp-balm-200ml/20226,2556.0,False,
+4,Bioderma,20228,Atoderm PP Balm 500ml,https://maccaron.in/en/products/bioderma_atoderm-pp-balm-500ml/20228,3980.0,False,
+4,Bioderma,20355,Cicabio Mains Barrier Repairing Hand Balm 50ml,https://maccaron.in/en/products/bioderma_cicabio-mains-barrier-repairing-hand-balm-50ml/20355,844.0,False,
+4,Bioderma,20383,Atoderm Hand & Nail Cream 50ml,https://maccaron.in/en/products/bioderma_atoderm-hand-nail-cream-50ml/20383,400.0,False,
+4,Bioderma,20868,Atoderm Lipstick 4g+Hand Cream 50ml,https://maccaron.in/en/products/bioderma_atoderm-lipstick-4ghand-cream-50ml/20868,1940.0,False,
+4,Bioderma,75799,Two-in-One Oil 150ml Set,https://maccaron.in/en/products/bioderma_two-in-one-oil-150ml-set/75799,4140.0,False,
+4,Bioderma,75800,Ultra Cream 500ml Set,https://maccaron.in/en/products/bioderma_ultra-cream-500ml-set/75800,3420.0,False,
+4,Bioderma,75818,Two-in-One Oil 150ml Set,https://maccaron.in/en/products/bioderma_two-in-one-oil-150ml-set/75818,4140.0,False,
+4,Bioderma,75819,Huile 150ml,https://maccaron.in/en/products/bioderma_huile-150ml/75819,4140.0,False,
+4,Bioderma,75989,Micellar Cleansing Oil 150ml Double Set,https://maccaron.in/en/products/bioderma_micellar-cleansing-oil-150ml-double-set/75989,5500.0,False,
+4,Bioderma,76000,Micellar Cleansing Oil 150ml+10ml Set,https://maccaron.in/en/products/bioderma_micellar-cleansing-oil-150ml10ml-set/76000,2460.0,False,
+4,Bioderma,76015,H2O 500ml Double Awards Set,https://maccaron.in/en/products/bioderma_h2o-500ml-double-awards-set/76015,3633.75,False,
+4,Bioderma,76023,H2O 500ml (pump type),https://maccaron.in/en/products/bioderma_h2o-500ml-pump-type/76023,2358.75,False,
+4,Bioderma,76026,Hydrabio H2O 500ml,https://maccaron.in/en/products/bioderma_hydrabio-h2o-500ml/76026,2188.75,False,
+4,Bioderma,76027,Hydrabio H2O 100ml,https://maccaron.in/en/products/bioderma_hydrabio-h2o-100ml/76027,425.0,False,
+4,Bioderma,76029,Sebium H2O 500ml,https://maccaron.in/en/products/bioderma_sebium-h2o-500ml/76029,2188.75,False,
+4,Bioderma,76030,H2O 500ml,https://maccaron.in/en/products/bioderma_h2o-500ml/76030,2188.75,False,
+4,Bioderma,76031,H2O 250ml,https://maccaron.in/en/products/bioderma_h2o-250ml/76031,1168.75,False,
+4,Bioderma,76084,Photoderm Spot Age SPF50+ 40ml,https://maccaron.in/en/products/bioderma_photoderm-spot-age-spf50-40ml/76084,2700.0,False,
+4,Bioderma,76236,Hydrabio Essence Lotion 200ml Set (+20 Mini Sheet Masks),https://maccaron.in/en/products/bioderma_hydrabio-essence-lotion-200ml-set-20-mini-sheet-masks/76236,2780.0,False,
+4,Bioderma,76241,Hydrabio Hyaluronic Acid + Serum 30ml,https://maccaron.in/en/products/bioderma_hydrabio-hyaluronic-acid-serum-30ml/76241,4380.0,False,
+4,Bioderma,76322,Defense Serum 30ml Set,https://maccaron.in/en/products/bioderma_defense-serum-30ml-set/76322,3980.0,False,
+4,Bioderma,76384,Intensive Balm 200ml Set (+75ml),https://maccaron.in/en/products/bioderma_intensive-balm-200ml-set-75ml/76384,3260.0,False,
+4,Bioderma,78634,H2O 500ml+500ml,https://maccaron.in/en/products/bioderma_h2o-500ml500ml/78634,3149.0,False,
+4,La Roche-Posay,17168,Cicaplast B5 Spray 100ml,https://maccaron.in/en/products/la-roche-posay_cicaplast-b5-spray-100ml/17168,1700.0,False,
+4,La Roche-Posay,17332,Cicaplast Lotion B5 Panthenol Cica Essence Toner 200ml,https://maccaron.in/en/products/la-roche-posay_cicaplast-lotion-b5-panthenol-cica-essence-toner-200ml/17332,2460.0,False,
+4,La Roche-Posay,17448,Toleriane Ultra Lotion 400ml,https://maccaron.in/en/products/la-roche-posay_toleriane-ultra-lotion-400ml/17448,3980.0,False,
+4,La Roche-Posay,17449,Toleriane Ultra Lotion 200ml,https://maccaron.in/en/products/la-roche-posay_toleriane-ultra-lotion-200ml/17449,2364.0,False,
+4,La Roche-Posay,17539,Effaclar H Toner 200ml,https://maccaron.in/en/products/la-roche-posay_effaclar-h-toner-200ml/17539,1988.0,False,
+4,La Roche-Posay,17713,Effaclar Ultra Concentrated Serum 30ml Set (+Effa Form 15ml),https://maccaron.in/en/products/la-roche-posay_effaclar-ultra-concentrated-serum-30ml-set-effa-form-15ml/17713,3980.0,False,
+4,La Roche-Posay,17714,Cicaplast Cream B5 100ml Set (+Cica Serum 30ml),https://maccaron.in/en/products/la-roche-posay_cicaplast-cream-b5-100ml-set-cica-serum-30ml/17714,8348.0,False,
+4,La Roche-Posay,17863,Cicaplast B5 Ultra Repair Serum 30ml Set (effaclar toner 15ml+uvidea rosy 3ml),https://maccaron.in/en/products/la-roche-posay_cicaplast-b5-ultra-repair-serum-30ml-set-effaclar-toner-15mluvidea-rosy-3ml/17863,3980.0,False,
+4,La Roche-Posay,17915,Cicaplast Ultra Repair Serum B5 30ml,https://maccaron.in/en/products/la-roche-posay_cicaplast-ultra-repair-serum-b5-30ml/17915,3980.0,False,
+4,La Roche-Posay,17918,Toleriane Dermallergo Cream 40ml,https://maccaron.in/en/products/la-roche-posay_toleriane-dermallergo-cream-40ml/17918,2460.0,False,
+4,La Roche-Posay,17934,Hyalu B5 Serum Set (30ml+1.5ml+Toralian Lotion 15ml),https://maccaron.in/en/products/la-roche-posay_hyalu-b5-serum-set-30ml15mltoralian-lotion-15ml/17934,4548.0,False,
+4,La Roche-Posay,18127,Hyalu B5 Serum 30ml,https://maccaron.in/en/products/la-roche-posay_hyalu-b5-serum-30ml/18127,4548.0,False,
+4,La Roche-Posay,18210,Serozinc Control Toning Mist 150ml,https://maccaron.in/en/products/la-roche-posay_serozinc-control-toning-mist-150ml/18210,1036.0,False,
+4,La Roche-Posay,18227,Effaclar K + Toner 200ml (oily skin),https://maccaron.in/en/products/la-roche-posay_effaclar-k-toner-200ml-oily-skin/18227,2748.0,False,
+4,La Roche-Posay,18229,Effaclar Deep Cleansing Foaming Cream Duo (125ml*2),https://maccaron.in/en/products/la-roche-posay_effaclar-deep-cleansing-foaming-cream-duo-125ml2/18229,4740.0,False,
+4,La Roche-Posay,18231,Uvidea Anthelios Melt-In Cream (Moist),https://maccaron.in/en/products/la-roche-posay_uvidea-anthelios-melt-in-cream-moist/18231,2748.0,False,
+4,La Roche-Posay,18745,Ubidea Anthelios Tone Up clear 30ml+Toralian Foam 15ml+Cica Bam 3ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-clear-30mltoralian-foam-15mlcica-bam-3ml/18745,2748.0,False,
+4,La Roche-Posay,18746,Ubidea Anthelios Tone Up clear 30ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-clear-30ml/18746,2748.0,False,
+4,La Roche-Posay,18747,Ubidea Anthelios Tone Up Light 30ml+Cica Toner 50ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-light-30mlcica-toner-50ml/18747,2748.0,False,
+4,La Roche-Posay,18748,Ubidea Anthelios Tone Up Rosy Duo,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-rosy-duo/18748,6068.0,False,
+4,La Roche-Posay,18749,Ubidea Anthelios Tone Up Rosy 30ml+Epa Form 15ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-rosy-30mlepa-form-15ml/18749,2748.0,False,
+4,La Roche-Posay,18750,Ubidea Anthelios Tone Up Rosy 30ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-rosy-30ml/18750,2748.0,False,
+4,La Roche-Posay,18751,Ubidea Anthelios Tone Up Light Cream 30ml,https://maccaron.in/en/products/la-roche-posay_ubidea-anthelios-tone-up-light-cream-30ml/18751,2748.0,False,
+4,La Roche-Posay,18947,EFFACLAR CREAM CLEANSER FOR OILY SKIN 50ml+Cica Cream 15ml,https://maccaron.in/en/products/la-roche-posay_effaclar-cream-cleanser-for-oily-skin-50mlcica-cream-15ml/18947,748.0,False,
+4,La Roche-Posay,18998,TOLERIANE PURIFYING FOAMING CREAM CLEANSER 125m+Cica Cream 15ml,https://maccaron.in/en/products/la-roche-posay_toleriane-purifying-foaming-cream-cleanser-125mcica-cream-15ml/18998,2084.0,False,
+4,La Roche-Posay,19017,TOLERIANE PURIFYING FOAMING CREAM CLEANSER 1+1 (125ml*2),https://maccaron.in/en/products/la-roche-posay_toleriane-purifying-foaming-cream-cleanser-11-125ml2/19017,4740.0,False,
+4,La Roche-Posay,19018,EFFACLAR CREAM CLEANSER FOR OILY SKIN 1+1 (125ml*2),https://maccaron.in/en/products/la-roche-posay_effaclar-cream-cleanser-for-oily-skin-11-125ml2/19018,4740.0,False,
+4,La Roche-Posay,19058,EFFACLAR CREAM CLEANSER FOR OILY SKIN 125ml+EFFACLAR Form 15ml,https://maccaron.in/en/products/la-roche-posay_effaclar-cream-cleanser-for-oily-skin-125mleffaclar-form-15ml/19058,2084.0,False,
+4,La Roche-Posay,19059,TOLERIANE PURIFYING FOAMING CREAM CLEANSER 125ml+15ml,https://maccaron.in/en/products/la-roche-posay_toleriane-purifying-foaming-cream-cleanser-125ml15ml/19059,2084.0,False,
+4,La Roche-Posay,19169,EFFACLAR CREAM CLEANSER FOR OILY SKIN 125ml,https://maccaron.in/en/products/la-roche-posay_effaclar-cream-cleanser-for-oily-skin-125ml/19169,2084.0,False,
+4,La Roche-Posay,19182,TOLERIANE PURIFYING FOAMING CREAM CLEANSER 125ml,https://maccaron.in/en/products/la-roche-posay_toleriane-purifying-foaming-cream-cleanser-125ml/19182,2084.0,False,
+4,La Roche-Posay,19350,MICELLAR WATER CLEANSER FOR SENSITIVE SKIN 400ml,https://maccaron.in/en/products/la-roche-posay_micellar-water-cleanser-for-sensitive-skin-400ml/19350,2364.0,False,
+4,La Roche-Posay,75943,Toleriane Foaming Cleanser 125ml+50ml Large Size Set,https://maccaron.in/en/products/la-roche-posay_toleriane-foaming-cleanser-125ml50ml-large-size-set/75943,3580.0,False,
+4,La Roche-Posay,76357,Cicaplast Baume B5+ 100ml & 100ml Double Set,https://maccaron.in/en/products/la-roche-posay_cicaplast-baume-b5-100ml-100ml-double-set/76357,6860.0,False,
+4,La Roche-Posay,76439,Hyalu B5 Eye Serum 15ml,https://maccaron.in/en/products/la-roche-posay_hyalu-b5-eye-serum-15ml/76439,4140.0,False,
+4,La Roche-Posay,78587,Effaclar Ultra Concentrated Serum 30ml Set,https://maccaron.in/en/products/la-roche-posay_effaclar-ultra-concentrated-serum-30ml-set/78587,4140.0,False,
+4,La Roche-Posay,78592,Cicaplast Multi-Repair Cream 100ml Set,https://maccaron.in/en/products/la-roche-posay_cicaplast-multi-repair-cream-100ml-set/78592,4140.0,False,
+4,La Roche-Posay,78631,Toleriane Foaming Cleanser 125ml Set,https://maccaron.in/en/products/la-roche-posay_toleriane-foaming-cleanser-125ml-set/78631,2220.0,False,
+4,La Roche-Posay,78637,Uvidea Anthelios Tone-Up Sunscreen 30ml Set,https://maccaron.in/en/products/la-roche-posay_uvidea-anthelios-tone-up-sunscreen-30ml-set/78637,2860.0,False,
+3,Foxtale,98618,Brightening Vitamin C Face Serum With L-Ascorbic Acid And Vitamin E For Glowing Skin - 30ml,https://maccaron.in/en/products/foxtale_brightening-vitamin-c-face-serum-with-l-ascorbic-acid-and-vitamin-e-for-glowing-skin-30ml/98618,535.35,True,8908018477000
+3,Foxtale,98619,"Ceramide Supercream Hydrating Moisturizer With Hyaluronic Acid, Strengthens Skin Barrier - 50ml",https://maccaron.in/en/products/foxtale_ceramide-supercream-hydrating-moisturizer-with-hyaluronic-acid-strengthens-skin-barrier-50ml/98619,420.75,True,8908018477017
+3,Foxtale,98620,SPF 70 PA++++ Mattifying Sunscreen With Niacinamide + Provitamin B5 + Vitamin E - 50ml,https://maccaron.in/en/products/foxtale_spf-70-pa-mattifying-sunscreen-with-niacinamide-provitamin-b5-vitamin-e-50ml/98620,400.95,True,8908018477062
+3,Foxtale,98621,"Foxtale Dewy Finish SPF 50 PA++++ Sunscreen For Dry Skin, Deeply Hydrates, In-Vivo Tested - 50ml",https://maccaron.in/en/products/foxtale_foxtale-dewy-finish-spf-50-pa-sunscreen-for-dry-skin-deeply-hydrates-in-vivo-tested-50ml/98621,405.9,True,8908018477031
+3,Foxtale,98622,"Hydrating Cleanser And Make-Up Remover, With Hyaluronic Acid - 100ml",https://maccaron.in/en/products/foxtale_hydrating-cleanser-and-make-up-remover-with-hyaluronic-acid-100ml/98622,316.0,True,8908018477024
+3,Foxtale,98623,Acne Spot Corrector Gel with Azelaic Acid + AHA + BHA for Treating Active Acne in 12 hrs - 15ml,https://maccaron.in/en/products/foxtale_acne-spot-corrector-gel-with-azelaic-acid-aha-bha-for-treating-active-acne-in-12-hrs-15ml/98623,368.18,True,8908018477055
+3,Foxtale,98624,"0.15% Encapsulated Retinol Night Serum Boosts Collagen, Treats Fine Lines & Wrinkles - 30ml",https://maccaron.in/en/products/foxtale_015-encapsulated-retinol-night-serum-boosts-collagen-treats-fine-lines-wrinkles-30ml/98624,497.17,False,8908018477116
+3,Foxtale,98625,Hydrating Serum With Hyaluronic Acid & 6 Hydration Boosters for 24 hours Moisturization - 30ml,https://maccaron.in/en/products/foxtale_hydrating-serum-with-hyaluronic-acid-6-hydration-boosters-for-24-hours-moisturization-30ml/98625,455.67,True,8908018477123
+3,Foxtale,98626,Overnight Glow Mask With 4% Glycolic Acid & 3% Lactic Acid For Overnight Salon Like Glow AHA + PHA + Provitamin B5 - 30ml,https://maccaron.in/en/products/foxtale_overnight-glow-mask-with-4-glycolic-acid-3-lactic-acid-for-overnight-salon-like-glow-aha-pha-provitamin-b5-30ml/98626,470.05,True,8908018477161
+3,Foxtale,98627,"Refreshing Face Wash with Niacinamide & Vitamin E, Deeply Cleans Pores and Soothes Skin - 100ml",https://maccaron.in/en/products/foxtale_refreshing-face-wash-with-niacinamide-vitamin-e-deeply-cleans-pores-and-soothes-skin-100ml/98627,199.2,True,8908018477208
+3,Foxtale,98628,Nourishing Moisturiser With Niacinamide & Vit E for 24Hr Hydration - 50ml,https://maccaron.in/en/products/foxtale_nourishing-moisturiser-with-niacinamide-vit-e-for-24hr-hydration-50ml/98628,233.75,True,8908018477192
+3,Foxtale,98629,AHA BHA 2% Salicylic Acid Serum with Niacinamide for Acne & Blackheads - 30ml,https://maccaron.in/en/products/foxtale_aha-bha-2-salicylic-acid-serum-with-niacinamide-for-acne-blackheads-30ml/98629,452.35,True,8908018477185
+3,Foxtale,98630,"Rapid Spot Reduction Drops With 3% Tranexamic Acid & Niacinamide, Fades Marks & Pigmentation - 30ml",https://maccaron.in/en/products/foxtale_rapid-spot-reduction-drops-with-3-tranexamic-acid-niacinamide-fades-marks-pigmentation-30ml/98630,493.85,True,8908018477154
+3,Foxtale,98631,Glow Sunscreen SPF 50 PA++++ with Vitamin C & Niacinamide for a Dewy Glow - 50ml,https://maccaron.in/en/products/foxtale_glow-sunscreen-spf-50-pa-with-vitamin-c-niacinamide-for-a-dewy-glow-50ml/98631,318.75,True,8908018477215
+3,Foxtale,98632,"Acne Control Cleanser with Salicylic Acid & Niacinamide, Controls Oil & Fights Acne - 100ml",https://maccaron.in/en/products/foxtale_acne-control-cleanser-with-salicylic-acid-niacinamide-controls-oil-fights-acne-100ml/98632,275.71,False,8908018477239
+3,Foxtale,98633,"5% Niacinamide Serum | Fades Blemishes, Brightens Skin | Beginner-Friendly Formula - 30ml",https://maccaron.in/en/products/foxtale_5-niacinamide-serum-fades-blemishes-brightens-skin-beginner-friendly-formula-30ml/98633,493.85,True,8908018477352
+3,Foxtale,98634,Aquamarine Oil Free Hydrating Moisturiser With Hyaluronic Acid For Normal To Oily Skin - 100g,https://maccaron.in/en/products/foxtale_aquamarine-oil-free-hydrating-moisturiser-with-hyaluronic-acid-for-normal-to-oily-skin-100g/98634,323.9,True,8908018477420
+3,Foxtale,98635,Vitamin-C Super Glow Moisturiser With Niacinamide & Peptides For Glowing Skin - 50ml,https://maccaron.in/en/products/foxtale_vitamin-c-super-glow-moisturiser-with-niacinamide-peptides-for-glowing-skin-50ml/98635,420.75,True,8908018477475
+3,Foxtale,98662,Purify & Glow Cleanser + Mask With French Pink Clay & Sodium - 100ml,https://maccaron.in/en/products/foxtale_purify-glow-cleanser-mask-with-french-pink-clay-sodium-100ml/98662,308.1,False,8908018477512
+3,Foxtale,98663,Essentials Sheet Masks - Hyaluronic Acid & Avocado - 26g,https://maccaron.in/en/products/foxtale_essentials-sheet-masks-hyaluronic-acid-avocado-26g/98663,94.05,True,8908018477369
+3,Foxtale,98665,Essentials Sheet Masks - Niacinamide & Berries - 26g,https://maccaron.in/en/products/foxtale_essentials-sheet-masks-niacinamide-berries-26g/98665,94.05,True,8908018477468
+3,Foxtale,98666,"Skin Repair Cream With Olive Leaf Extract, Provitamin B5 & Niacinamide - 50g",https://maccaron.in/en/products/foxtale_skin-repair-cream-with-olive-leaf-extract-provitamin-b5-niacinamide-50g/98666,293.25,False,8908018477543
+3,Foxtale,98667,"De-Tan Skin Radiance Mask, With Lactic Acid, Brazilian Purple Clay & Kaolin Clay - 75g",https://maccaron.in/en/products/foxtale_de-tan-skin-radiance-mask-with-lactic-acid-brazilian-purple-clay-kaolin-clay-75g/98667,479.6,True,8908018477581
+3,Foxtale,98668,The Dazzler Multivitamin Glow Toner + Makeup Setting Spray - 150ml,https://maccaron.in/en/products/foxtale_the-dazzler-multivitamin-glow-toner-makeup-setting-spray-150ml/98668,316.0,False,8908018477734
+3,Foxtale,98669,Exfoliating Toner with 5% Latic Acid & Niacinamide for Brighter Skin & Tighter Pores - 150ml,https://maccaron.in/en/products/foxtale_exfoliating-toner-with-5-latic-acid-niacinamide-for-brighter-skin-tighter-pores-150ml/98669,316.0,True,8908018477727
+3,Foxtale,98670,Hula Hoop Brightening Body Lotion by Foxtale | Brightens & Hydrates | 200ml,https://maccaron.in/en/products/foxtale_hula-hoop-brightening-body-lotion-by-foxtale-brightens-hydrates-200ml/98670,350.22,True,8908018477666
+3,Foxtale,98671,Hula Hoop Brightening Body Wash by Foxtale | Exfoliates & Reduces Tan |250ml,https://maccaron.in/en/products/foxtale_hula-hoop-brightening-body-wash-by-foxtale-exfoliates-reduces-tan-250ml/98671,327.18,False,8908018477659
+3,Foxtale,98672,Hula Hoop Ultra Nourishing Body Lotion by Foxtale | Hydrates & Repairs,https://maccaron.in/en/products/foxtale_hula-hoop-ultra-nourishing-body-lotion-by-foxtale-hydrates-repairs/98672,272.22,True,8908018477710
+3,Foxtale,98673,Hula Hoop HydraLock Body Wash | 24-Hrs Long Hydration & Moisturization | 250ml,https://maccaron.in/en/products/foxtale_hula-hoop-hydralock-body-wash-24-hrs-long-hydration-moisturization-250ml/98673,263.2,False,8908018477635
+3,Foxtale,98674,"Brightening Under Eye Cream with Vitamin-C, Caffeine & Hyaluronic Acid - 20ml",https://maccaron.in/en/products/foxtale_brightening-under-eye-cream-with-vitamin-c-caffeine-hyaluronic-acid-20ml/98674,405.9,True,8908018477871
+3,Foxtale,98675,12% Niacinamide + Azelaic Acid Clarifying Serum - 30ml,https://maccaron.in/en/products/foxtale_12-niacinamide-azelaic-acid-clarifying-serum-30ml/98675,554.7,True,8908018477918
+3,Foxtale,98676,"Brightening Lip Balm With Peptides, Vitamin C & Hyaluronic Acid - Clear Glaze - 12g",https://maccaron.in/en/products/foxtale_brightening-lip-balm-with-peptides-vitamin-c-hyaluronic-acid-clear-glaze-12g/98676,225.5,False,8908025015004
+3,Foxtale,98677,"Brightening Lip Balm With Peptides, Vitamin C & Hyaluronic Acid - Ruby Glaze - 12g",https://maccaron.in/en/products/foxtale_brightening-lip-balm-with-peptides-vitamin-c-hyaluronic-acid-ruby-glaze-12g/98677,225.5,False,8908025015011
+3,Foxtale,98678,"Brightening Lip Balm With Peptides, Vitamin C & Hyaluronic Acid - Light Mauve Glaze - 12g",https://maccaron.in/en/products/foxtale_brightening-lip-balm-with-peptides-vitamin-c-hyaluronic-acid-light-mauve-glaze-12g/98678,225.5,True,8908025015035
+3,Foxtale,98679,"Brightening Lip Balm With Peptides, Vitamin C & Hyaluronic Acid Bubblegum Pink Glaze - 12g",https://maccaron.in/en/products/foxtale_brightening-lip-balm-with-peptides-vitamin-c-hyaluronic-acid-bubblegum-pink-glaze-12g/98679,225.5,True,8908025015028
+3,Foxtale,98680,Hula Hoop Exfoliating Body Wash by Foxtale | Exfoliates & Smoothens | 250ml,https://maccaron.in/en/products/foxtale_hula-hoop-exfoliating-body-wash-by-foxtale-exfoliates-smoothens-250ml/98680,339.15,True,8908025015134
+3,Foxtale,98681,Nourishing Moisturiser With Niacinamide & Vit E for 24Hr Hydration - 100ml,https://maccaron.in/en/products/foxtale_nourishing-moisturiser-with-niacinamide-vit-e-for-24hr-hydration-100ml/98681,323.9,True,8908025015196
+3,Foxtale,98682,Glow Sunscreen SPF 50 PA++++ with Vitamin C & Niacinamide for a Dewy Glow - 80ml,https://maccaron.in/en/products/foxtale_glow-sunscreen-spf-50-pa-with-vitamin-c-niacinamide-for-a-dewy-glow-80ml/98682,446.9,True,8908025015295
+3,Foxtale,98869,Valley Of Flowers Eau De Parfum (50ml),https://maccaron.in/en/products/foxtale_valley-of-flowers-eau-de-parfum-50ml/98869,661.5,True,8908025015318
+3,Foxtale,99188,"Oil Balancing Moisturizer, regulates oil, boosts hydration & calms inflammation - 50 ml",https://maccaron.in/en/products/foxtale_oil-balancing-moisturizer-regulates-oil-boosts-hydration-calms-inflammation-50-ml/99188,378.25,True,8908025015486
+3,Foxtale,99189,Lip Sleeping Mask with Ceramides & Maracuja Oil for hydrated plump lips - 12g,https://maccaron.in/en/products/foxtale_lip-sleeping-mask-with-ceramides-maracuja-oil-for-hydrated-plump-lips-12g/99189,364.9,True,8908025015431
+3,Foxtale,99272,"Vitamin C Super Glow Face Wash with Papaya Enzyme, Reduces Tan, Boosts Glow -100ml",https://maccaron.in/en/products/foxtale_vitamin-c-super-glow-face-wash-with-papaya-enzyme-reduces-tan-boosts-glow-100ml/99272,219.12,True,8908025015479
+3,Foxtale,99273,"Vitamin C Super Glow Face Wash with Papaya Enzyme, Reduces Tan, Boosts Glow -150ml",https://maccaron.in/en/products/foxtale_vitamin-c-super-glow-face-wash-with-papaya-enzyme-reduces-tan-boosts-glow-150ml/99273,282.94,True,8908025015530
+3,Foxtale,99733,True Clarity Oil and Acne Control Face Wash - 100ml,https://maccaron.in/en/products/foxtale_true-clarity-oil-and-acne-control-face-wash-100ml/99733,219.12,True,8908025015554
+3,Foxtale,99734,0.3% Retinol Serum – Targets 8 Signs of Ageing,https://maccaron.in/en/products/foxtale_03-retinol-serum-targets-8-signs-of-ageing/99734,535.35,True,8908025015509
+3,Foxtale,99846,"Foxtale Oil and Acne Control Face Wash – Fights Acne, Calms Skin, No Dryness - 150ml",https://maccaron.in/en/products/foxtale_foxtale-oil-and-acne-control-face-wash-fights-acne-calms-skin-no-dryness-150ml/99846,282.94,True,8908025015561
+3,Foxtale,99847,Eternal Light – Brightening Serum with 10% Vitamin C & Glutathione,https://maccaron.in/en/products/foxtale_eternal-light-brightening-serum-with-10-vitamin-c-glutathione/99847,554.7,True,8908025015585
+3,Foxtale,101408,Perfect Match Tinted Fluid Sunscreen(Nude) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-sunscreennude-50ml/101408,488.75,True,8908025015653
+3,Foxtale,101409,Perfect Match Tinted Fluid Sunscreen(Sand) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-sunscreensand-50ml/101409,488.75,True,8908025015677
+3,Foxtale,101410,Perfect Match Tinted Fluid Sunscreen (Caramel) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-sunscreen-caramel-50ml/101410,488.75,True,8908025015684
+3,Foxtale,101411,Perfect Match Tinted Fluid Susncreen (Clay) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-susncreen-clay-50ml/101411,488.75,True,8908025015691
+3,Foxtale,101412,Perfect Match Tinted Fluid Sunscreen(Mocha) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-sunscreenmocha-50ml/101412,488.75,True,8908025015707
+3,Foxtale,101413,Perfect Match Tinted Fluid Sunscreen (Coco) - 50ml,https://maccaron.in/en/products/foxtale_perfect-match-tinted-fluid-sunscreen-coco-50ml/101413,488.75,True,8908025015714
+3,Foxtale,101414,"Oil Balancing Moisturizer, regulates oil, boosts hydration & calms inflammation - 15ml",https://maccaron.in/en/products/foxtale_oil-balancing-moisturizer-regulates-oil-boosts-hydration-calms-inflammation-15ml/101414,193.03,True,8908025015660
+3,Foxtale,121919,In-Vivo Tested Lightweight Aqua-Gel Sunscreen for Oily Skin | SPF 50 PA++++ | 50 ml,https://maccaron.in/en/products/foxtale_in-vivo-tested-lightweight-aqua-gel-sunscreen-for-oily-skin-spf-50-pa-50-ml/121919,327.18,True,8906209550051
+3,Foxtale,121920,In-Vivo Tested Lightweight Aqua-Gel Sunscreen for Oily Skin | SPF 50 PA++++ | 80 ml,https://maccaron.in/en/products/foxtale_in-vivo-tested-lightweight-aqua-gel-sunscreen-for-oily-skin-spf-50-pa-80-ml/121920,442.75,True,8906209550167
+2,Cetaphil,17624,Setapil Facial Moisture Serum 30ml,https://maccaron.in/en/products/cetaphil_setapil-facial-moisture-serum-30ml/17624,1796.0,False,
+2,Cetaphil,19841,Ultra Gentle Refreshing Body Wash 400ml,https://maccaron.in/en/products/cetaphil_ultra-gentle-refreshing-body-wash-400ml/19841,604.0,False,
+2,Cetaphil,19950,Advanced Relief Lotion with Shea Butter 473ml,https://maccaron.in/en/products/cetaphil_advanced-relief-lotion-with-shea-butter-473ml/19950,1652.0,False,
+2,Cetaphil,19970,Moisturising Cream 453g+Cream 14g+Spatula,https://maccaron.in/en/products/cetaphil_moisturising-cream-453gcream-14gspatula/19970,1940.0,False,
+2,Cetaphil,20045,Daily Advance Ultra Hydrating Lotion 473ml,https://maccaron.in/en/products/cetaphil_daily-advance-ultra-hydrating-lotion-473ml/20045,1796.0,False,
+2,Cetaphil,20118,Soothing Gel Cream 226g,https://maccaron.in/en/products/cetaphil_soothing-gel-cream-226g/20118,1604.0,False,
+2,Cetaphil,20248,Moisturising Cream 453g,https://maccaron.in/en/products/cetaphil_moisturising-cream-453g/20248,1940.0,False,
+2,Minimalist,122188,SPF 50 Sunscreen 50g,https://maccaron.in/en/products/minimalist_spf-50-sunscreen-50g/122188,379.05,True,
+2,Minimalist,122189,Vitamin C 10% Face Serum 10ml,https://maccaron.in/en/products/minimalist_vitamin-c-10-face-serum-10ml/122189,284.05,True,
+2,Minimalist,122190,Salicylic Acid + LHA 02% Cleanser 100ml,https://maccaron.in/en/products/minimalist_salicylic-acid-lha-02-cleanser-100ml/122190,284.05,True,
+2,Minimalist,122191,Niacinamide 10% Face Serum 10ml,https://maccaron.in/en/products/minimalist_niacinamide-10-face-serum-10ml/122191,236.55,True,
+2,Minimalist,122192,Vitamin B5 10% Moisturizer 30g,https://maccaron.in/en/products/minimalist_vitamin-b5-10-moisturizer-30g/122192,189.05,True,
+2,Minimalist,122193,Salicylic Acid 02% Face Serum 10ml,https://maccaron.in/en/products/minimalist_salicylic-acid-02-face-serum-10ml/122193,236.55,True,
+2,Minimalist,122194,Marula Oil 05% Moisturizer 50g,https://maccaron.in/en/products/minimalist_marula-oil-05-moisturizer-50g/122194,331.55,True,
+2,Minimalist,122195,Vitamin B5 10% Moisturizer 50g,https://maccaron.in/en/products/minimalist_vitamin-b5-10-moisturizer-50g/122195,331.55,True,
+2,Minimalist,122196,Alpha Arbutin 02% Face Serum 10ml,https://maccaron.in/en/products/minimalist_alpha-arbutin-02-face-serum-10ml/122196,236.55,True,
+2,Minimalist,122197,SPF 50 Face Sunscreen 30g,https://maccaron.in/en/products/minimalist_spf-50-face-sunscreen-30g/122197,236.55,True,
+2,Plum,11652,Green Tea Alcohol-Free Toner - 200 ml,https://maccaron.in/en/products/plum_green-tea-alcohol-free-toner-200-ml/11652,390.0,False,
+2,Plum,11653,Green Tea Revitalizing Face Mist - 100 ml,https://maccaron.in/en/products/plum_green-tea-revitalizing-face-mist-100-ml/11653,360.0,False,
+2,Plum,11654,Green Tea Clear Face Mask - 60 gm,https://maccaron.in/en/products/plum_green-tea-clear-face-mask-60-gm/11654,490.0,False,
+2,Plum,11655,Green Tea Mattifying Moisturizer - 50 ml,https://maccaron.in/en/products/plum_green-tea-mattifying-moisturizer-50-ml/11655,470.0,False,
+2,Plum,11656,Green Tea Day-Light Sunscreen SPF 35 PA+++ - 50 ml,https://maccaron.in/en/products/plum_green-tea-day-light-sunscreen-spf-35-pa-50-ml/11656,575.0,False,
+2,Plum,11659,Green Tea Renewed Clarity Night Gel - 50 ml,https://maccaron.in/en/products/plum_green-tea-renewed-clarity-night-gel-50-ml/11659,575.0,False,
+2,Plum,11661,Green Tea Gentle Revival Face Scrub - 75 gm,https://maccaron.in/en/products/plum_green-tea-gentle-revival-face-scrub-75-gm/11661,395.0,False,
+2,Plum,11662,Green Tea Clear Spot-Light Gel - 15 ml,https://maccaron.in/en/products/plum_green-tea-clear-spot-light-gel-15-ml/11662,475.0,False,
+2,Plum,11663,Hello Aloe Caring Day Moisturizer - 60 ml,https://maccaron.in/en/products/plum_hello-aloe-caring-day-moisturizer-60-ml/11663,470.0,False,
+2,Plum,11664,Hello Aloe Gentle Cleansing Lotion - 200 ml,https://maccaron.in/en/products/plum_hello-aloe-gentle-cleansing-lotion-200-ml/11664,390.0,False,
+2,Plum,11668,Chamomile & White Tea Brighten-Up Face Scrub - 75 ml,https://maccaron.in/en/products/plum_chamomile-white-tea-brighten-up-face-scrub-75-ml/11668,375.0,False,
+2,Plum,11670,Chamomile & White Tea Glow-Getter Face Mask - 60 gm,https://maccaron.in/en/products/plum_chamomile-white-tea-glow-getter-face-mask-60-gm/11670,490.0,False,
+2,Plum,11671,Chamomile & White Tea Sheer Matte Day Cream SPF50 - 60 ml,https://maccaron.in/en/products/plum_chamomile-white-tea-sheer-matte-day-cream-spf50-60-ml/11671,520.0,False,
+2,Plum,11672,Chamomile & White Tea Skin Revival Face Wash - 75 ml,https://maccaron.in/en/products/plum_chamomile-white-tea-skin-revival-face-wash-75-ml/11672,350.0,True,
+2,Plum,11673,Chamomile & White Tea Skin Revival Face Wash - 120 ml,https://maccaron.in/en/products/plum_chamomile-white-tea-skin-revival-face-wash-120-ml/11673,495.0,True,
+2,Plum,11677,Grape Seed & Sea Buckthorn Nutri-Plenish Face Mist - 100 ml,https://maccaron.in/en/products/plum_grape-seed-sea-buckthorn-nutri-plenish-face-mist-100-ml/11677,360.0,False,
+2,Plum,11681,Grape Seed & Sea Buckthorn Glow-Restore Face Oils Blend - 30 ml,https://maccaron.in/en/products/plum_grape-seed-sea-buckthorn-glow-restore-face-oils-blend-30-ml/11681,775.0,False,
+2,Plum,11683,"E-Luminence ""The Bright Mix"" Face Serum - 30 ml",https://maccaron.in/en/products/plum_e-luminence-the-bright-mix-face-serum-30-ml/11683,1175.0,False,
+2,Plum,11684,E-Luminence Nourishing Toning Water - 200 ml,https://maccaron.in/en/products/plum_e-luminence-nourishing-toning-water-200-ml/11684,420.0,False,
+2,Plum,11685,E-Luminence Simply Supple Cleansing Balm with Kokum Butter- 90 gm,https://maccaron.in/en/products/plum_e-luminence-simply-supple-cleansing-balm-with-kokum-butter-90-gm/11685,545.0,False,
+2,Plum,11686,Bright Years Cell Renewal Serum - 30 ml,https://maccaron.in/en/products/plum_bright-years-cell-renewal-serum-30-ml/11686,1575.0,False,
+2,Plum,11688,Bright Years Restorative Overnight Creme - 50 ml,https://maccaron.in/en/products/plum_bright-years-restorative-overnight-creme-50-ml/11688,1125.0,False,
+2,Plum,11689,Bright Years Under-Eye Recovery Gel - 15 ml,https://maccaron.in/en/products/plum_bright-years-under-eye-recovery-gel-15-ml/11689,925.0,False,
+2,Plum,11692,10% Niacinamide Face Serum with Rice Water - 15 ml,https://maccaron.in/en/products/plum_10-niacinamide-face-serum-with-rice-water-15-ml/11692,450.0,False,
+2,Plum,11693,Candy Melts Vegan Lip Balm | Red Velvet Love - 12 gm,https://maccaron.in/en/products/plum_candy-melts-vegan-lip-balm-red-velvet-love-12-gm/11693,295.0,False,
+2,Plum,11694,Candy Melts Vegan Lip Balm | Melon Bubble-yum - 12 gm,https://maccaron.in/en/products/plum_candy-melts-vegan-lip-balm-melon-bubble-yum-12-gm/11694,295.0,False,
+2,Plum,11695,Candy Melts Vegan Lip Balm | Mint-o-Coco - 12 gm,https://maccaron.in/en/products/plum_candy-melts-vegan-lip-balm-mint-o-coco-12-gm/11695,295.0,False,
+2,Plum,11696,Candy Melts Vegan Lip Balm | Berry Feast - 12 gm,https://maccaron.in/en/products/plum_candy-melts-vegan-lip-balm-berry-feast-12-gm/11696,295.0,False,
+2,Plum,11697,10% Niacinamide Face Serum with Rice Water - 30 ml,https://maccaron.in/en/products/plum_10-niacinamide-face-serum-with-rice-water-30-ml/11697,790.0,False,
+2,Plum,11699,Hello Aloe Just Gel - 250 gm,https://maccaron.in/en/products/plum_hello-aloe-just-gel-250-gm/11699,395.0,False,
+2,Plum,11700,Green Tea Oil Free Face Moisturizer - 50 ml,https://maccaron.in/en/products/plum_green-tea-oil-free-face-moisturizer-50-ml/11700,470.0,False,
+2,Plum,11703,Bulgarian Valley Rose Water Toner - 200 ml,https://maccaron.in/en/products/plum_bulgarian-valley-rose-water-toner-200-ml/11703,420.0,False,
+2,Plum,11704,15% Vitamin C Face Serum with Mandarin - 20 ml,https://maccaron.in/en/products/plum_15-vitamin-c-face-serum-with-mandarin-20-ml/11704,550.0,False,
+2,Plum,11705,15% Vitamin C Face Serum with Mandarin - 30 ml,https://maccaron.in/en/products/plum_15-vitamin-c-face-serum-with-mandarin-30-ml/11705,790.0,False,
+2,Plum,11713,Hello Aloe Just Gel Pump - 225 gm,https://maccaron.in/en/products/plum_hello-aloe-just-gel-pump-225-gm/11713,350.0,False,
+2,Plum,11716,2% Hyaluronic Acid Serum with Bulgarian Rose - 15 ml,https://maccaron.in/en/products/plum_2-hyaluronic-acid-serum-with-bulgarian-rose-15-ml/11716,450.0,False,
+2,Plum,11717,2% Hyaluronic Acid Serum with Bulgarian Rose - 30 ml,https://maccaron.in/en/products/plum_2-hyaluronic-acid-serum-with-bulgarian-rose-30-ml/11717,790.0,False,
+2,Plum,11718,1% Retinol Face Serum with Bakuchiol - 20 ml,https://maccaron.in/en/products/plum_1-retinol-face-serum-with-bakuchiol-20-ml/11718,550.0,False,
+2,Plum,11719,1% Retinol Face Serum with Bakuchiol - 30 ml,https://maccaron.in/en/products/plum_1-retinol-face-serum-with-bakuchiol-30-ml/11719,790.0,False,
+2,Plum,11727,E-luminence Deep Moisturizing Creme - 50 ml,https://maccaron.in/en/products/plum_e-luminence-deep-moisturizing-creme-50-ml/11727,575.0,False,
+2,Plum,11731,3% Niacinamide Toner with Rice Water - 150 ml,https://maccaron.in/en/products/plum_3-niacinamide-toner-with-rice-water-150-ml/11731,420.0,False,
+2,Plum,11732,1.5% Vitamin C Toner with Mandarin - 100 ml,https://maccaron.in/en/products/plum_15-vitamin-c-toner-with-mandarin-100-ml/11732,425.0,False,
+2,Plum,11733,3% PHA Toner with Blueberry - 150 ml,https://maccaron.in/en/products/plum_3-pha-toner-with-blueberry-150-ml/11733,420.0,False,
+2,Plum,11734,Vitamin C Foaming Face Wash with Mandarin - 110 ml,https://maccaron.in/en/products/plum_vitamin-c-foaming-face-wash-with-mandarin-110-ml/11734,375.0,False,
+2,Plum,11737,3% Vitamin C Moisturizer with Mandarin - 50 ml,https://maccaron.in/en/products/plum_3-vitamin-c-moisturizer-with-mandarin-50-ml/11737,550.0,False,
+2,Plum,11738,"3% Vitamin C, 3% Peptide & 3% Caffeine Eye Cream with Mandarin - 15 ml",https://maccaron.in/en/products/plum_3-vitamin-c-3-peptide-3-caffeine-eye-cream-with-mandarin-15-ml/11738,475.0,False,
+2,Plum,11739,15% Vitamin C Face Serum with Mandarin - 3 ml,https://maccaron.in/en/products/plum_15-vitamin-c-face-serum-with-mandarin-3-ml/11739,175.0,False,
+2,Plum,11740,Specialist Serums - Starter Pack - Set of 3,https://maccaron.in/en/products/plum_specialist-serums-starter-pack-set-of-3/11740,475.0,False,
+2,Plum,11741,Specialist Serums - Starter Pack - Set of 5,https://maccaron.in/en/products/plum_specialist-serums-starter-pack-set-of-5/11741,690.0,False,
+2,Plum,11747,BodyLovin’ Hawaiian Rumba Shower Gel - 240 ml,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-shower-gel-240-ml/11747,380.0,False,
+2,Plum,11749,BodyLovin’ Hawaiian Rumba Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-body-mist-150-ml/11749,525.0,False,
+2,Plum,11750,BodyLovin’ Vanilla Vibes Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-body-mist-150-ml/11750,550.0,False,
+2,Plum,11754,BodyLovin’ Drivin’ Me Cherry Smoothie (Crème Lotion) - 240 ml,https://maccaron.in/en/products/plum_bodylovin-drivin-me-cherry-smoothie-creme-lotion-240-ml/11754,475.0,False,
+2,Plum,11755,BodyLovin’ Hawaiian Rumba Colada (Gel Lotion) - 240 ml,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-colada-gel-lotion-240-ml/11755,475.0,False,
+2,Plum,11757,BodyLovin’ Drivin' Me Cherry Gel Body Scrub - 200 gm,https://maccaron.in/en/products/plum_bodylovin-drivin-me-cherry-gel-body-scrub-200-gm/11757,550.0,False,
+2,Plum,11759,BodyLovin’ Hawaiian Rumba Body Oil - 200 ml,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-body-oil-200-ml/11759,550.0,False,
+2,Plum,11761,BodyLovin’ Hawaiian Rumba Hand Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-hand-cream-50-gm/11761,275.0,False,
+2,Plum,11763,BodyLovin’ Coffee Wake-a-ccino Hand Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-coffee-wake-a-ccino-hand-cream-50-gm/11763,275.0,False,
+2,Plum,11767,BodyLovin’ Vanila Vibes Body Butter - 200 gm,https://maccaron.in/en/products/plum_bodylovin-vanila-vibes-body-butter-200-gm/11767,525.0,False,
+2,Plum,11770,BodyLovin’ Coffee Wake-a-ccino Shower Cream (Body Wash) - 200 gm,https://maccaron.in/en/products/plum_bodylovin-coffee-wake-a-ccino-shower-cream-body-wash-200-gm/11770,380.0,False,
+2,Plum,11771,BodyLovin’ Vanilla Vibes Shower Cream (Body Wash) - 200 gm,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-shower-cream-body-wash-200-gm/11771,380.0,False,
+2,Plum,11773,BodyLovin’ Trippin' Mimosas Shower Gel - 240 ml,https://maccaron.in/en/products/plum_bodylovin-trippin-mimosas-shower-gel-240-ml/11773,380.0,False,
+2,Plum,11774,BodyLovin’ Orchid You Not Shower Gel - 240 ml,https://maccaron.in/en/products/plum_bodylovin-orchid-you-not-shower-gel-240-ml/11774,380.0,False,
+2,Plum,11775,BodyLovin’ Trippin' Mimosas Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-trippin-mimosas-body-mist-150-ml/11775,525.0,False,
+2,Plum,11776,BodyLovin’ Orchid You Not Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-orchid-you-not-body-mist-150-ml/11776,525.0,False,
+2,Plum,11777,BodyLovin’ Hawaiian Rumba De-odorizing Pit Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-de-odorizing-pit-cream-50-gm/11777,345.0,False,
+2,Plum,11778,BodyLovin’ Vanilla Vibes De-odorizing Pit Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-de-odorizing-pit-cream-50-gm/11778,345.0,False,
+2,Plum,11782,BodyLovin’ Vanilla Vibes Body Yogurt - 250 gm,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-body-yogurt-250-gm/11782,525.0,False,
+2,Plum,11785,BodyLovin’ Feelin’ So Rose Shower Gel - 240 ml,https://maccaron.in/en/products/plum_bodylovin-feelin-so-rose-shower-gel-240-ml/11785,380.0,False,
+2,Plum,11786,BodyLovin’ Feelin’ So Rose Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-feelin-so-rose-body-mist-150-ml/11786,525.0,False,
+2,Plum,11787,BodyLovin’ Feelin’ So Rose Hand Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-feelin-so-rose-hand-cream-50-gm/11787,275.0,False,
+2,Plum,11790,BodyLovin’ Vanilla Vibes Eau De Parfum - 50 ml,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-eau-de-parfum-50-ml/11790,950.0,False,
+2,Plum,11791,BodyLovin’ Hawaiian Rumba Eau De Parfum - 15 ml,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-eau-de-parfum-15-ml/11791,295.0,False,
+2,Plum,11792,BodyLovin’ Orchid-You-Not Eau De Parfum - 15 ml,https://maccaron.in/en/products/plum_bodylovin-orchid-you-not-eau-de-parfum-15-ml/11792,295.0,False,
+2,Plum,11793,BodyLovin’ Feelin’ So Rose Eau De Parfum - 15 ml,https://maccaron.in/en/products/plum_bodylovin-feelin-so-rose-eau-de-parfum-15-ml/11793,295.0,False,
+2,Plum,11794,BodyLovin’ Trippin' Mimosas Eau De Parfum - 15 ml,https://maccaron.in/en/products/plum_bodylovin-trippin-mimosas-eau-de-parfum-15-ml/11794,295.0,False,
+2,Plum,11795,BodyLovin’ Vanilla Vibes Eau De Parfum - 15 ml,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-eau-de-parfum-15-ml/11795,295.0,False,
+2,Plum,11796,BodyLovin’ Vanilla Vibes Shower Gel - 240 ml,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-shower-gel-240-ml/11796,380.0,False,
+2,Plum,11798,BodyLovin’ Vanilla Vibes Body Oil - 100 ml,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-body-oil-100-ml/11798,299.0,False,
+2,Plum,11804,BodyLovin’ Feelin’ So Rose De-odorizing Pit Cream - 50 gm,https://maccaron.in/en/products/plum_bodylovin-feelin-so-rose-de-odorizing-pit-cream-50-gm/11804,345.0,False,
+2,Plum,11805,BodyLovin’ Shea Got It Body Oil - 150 ml,https://maccaron.in/en/products/plum_bodylovin-shea-got-it-body-oil-150-ml/11805,525.0,False,
+2,Plum,11806,BodyLovin’ Caramel Popcorn Body Wash - 240 ml,https://maccaron.in/en/products/plum_bodylovin-caramel-popcorn-body-wash-240-ml/11806,380.0,False,
+2,Plum,11829,Daily Cleanse Duo Mint + Lemon - 300 ml + 300 ml + 15 gm,https://maccaron.in/en/products/plum_daily-cleanse-duo-mint-lemon-300-ml-300-ml-15-gm/11829,900.0,False,
+2,Plum,11830,Apple Cider Vinegar Shampoo - 200 ml,https://maccaron.in/en/products/plum_apple-cider-vinegar-shampoo-200-ml/11830,450.0,False,
+2,Plum,11872,Matte In Heaven Liquid Lipstick - 4.5ml,https://maccaron.in/en/products/plum_matte-in-heaven-liquid-lipstick-45ml/11872,499.0,False,
+2,Plum,15818,BodyLovin’ Body Shimmer Oil - Copper Sheen |Intense colour payoff|Non-greasy|Long-lasting shimmer Deep moisture Fruity Fragrance,https://maccaron.in/en/products/plum_bodylovin-body-shimmer-oil-copper-sheen-intense-colour-payoffnon-greasylong-lasting-shimmer-deep-moisture-fruity-fragrance/15818,525.0,False,
+2,Plum,15819,BodyLovin’ Body Shimmer Oil - Rose Gold|Intense colour payof|Non-greasy|Long-lasting shimmer | Deep moisture |Fruity fragrance,https://maccaron.in/en/products/plum_bodylovin-body-shimmer-oil-rose-goldintense-colour-payofnon-greasylong-lasting-shimmer-deep-moisture-fruity-fragrance/15819,525.0,False,
+2,Plum,15820,BodyLovin’ Body Shimmer Oil - Peach Glow|Intense colour payoff|Non-greasy|Long-lasting shimmer|Deep moisture|Fruit Fragrance,https://maccaron.in/en/products/plum_bodylovin-body-shimmer-oil-peach-glowintense-colour-payoffnon-greasylong-lasting-shimmerdeep-moisturefruit-fragrance/15820,525.0,False,
+2,Plum,15821,"BodyLovin’ Red Velvet Love Body Wash | Warm, Sweet Fragrance | 100% Vegan | Non-Drying | Creamy Formula | For All Skin Types",https://maccaron.in/en/products/plum_bodylovin-red-velvet-love-body-wash-warm-sweet-fragrance-100-vegan-non-drying-creamy-formula-for-all-skin-types/15821,380.0,False,
+2,Plum,15823,BodyLovin’ Smokin’ Vanilla Body Mist | Warm Vanilla Fragrance | Aloe-infused | Instantly Refreshes,https://maccaron.in/en/products/plum_bodylovin-smokin-vanilla-body-mist-warm-vanilla-fragrance-aloe-infused-instantly-refreshes/15823,575.0,False,
+2,Plum,15824,BodyLovin’ Red Velvet Love Gift Kit | Body Wash | Body Butter | Dessert Edition | Bath & Body | 100% Vegan | For All Skin Types,https://maccaron.in/en/products/plum_bodylovin-red-velvet-love-gift-kit-body-wash-body-butter-dessert-edition-bath-body-100-vegan-for-all-skin-types/15824,1195.0,False,
+2,Plum,15828,2% Niacinamide & Rice Water Hybrid Face Sunscreen with SPF 50 PA+++| No White Cast UVA & UVB Protection 100% Vegan | 50 g,https://maccaron.in/en/products/plum_2-niacinamide-rice-water-hybrid-face-sunscreen-with-spf-50-pa-no-white-cast-uva-uvb-protection-100-vegan-50-g/15828,399.0,False,
+2,Plum,15829,"Coconut & Squalane Nutri-Shine Hair Serum | Contains coconut oil, squalene, almond oil | | Paraben-Free | 100% vegan",https://maccaron.in/en/products/plum_coconut-squalane-nutri-shine-hair-serum-contains-coconut-oil-squalene-almond-oil-paraben-free-100-vegan/15829,475.0,False,
+2,Plum,15834,Candy Melts Red Velvet Love Tinted Lip Balm | Moisturizes & Nourishes | Hydrates Dry & Chapped Lips | 100% Vegan | 4.5g,https://maccaron.in/en/products/plum_candy-melts-red-velvet-love-tinted-lip-balm-moisturizes-nourishes-hydrates-dry-chapped-lips-100-vegan-45g/15834,199.0,False,
+2,Plum,15846,Green Tea & Peptide Daily Sunscreen Serum with Broad-spectrum SPF 50 & PA++++ || No White Cast | 100% Vegan | 50ml,https://maccaron.in/en/products/plum_green-tea-peptide-daily-sunscreen-serum-with-broad-spectrum-spf-50-pa-no-white-cast-100-vegan-50ml/15846,599.0,False,
+2,Plum,15847,Green Tea & Peptide Sheer-tinted Sunscreen Serum with SPF 50 & PA++++ |UVA & UVB Protection | No White Cast | 100% Vegan | 50ml,https://maccaron.in/en/products/plum_green-tea-peptide-sheer-tinted-sunscreen-serum-with-spf-50-pa-uva-uvb-protection-no-white-cast-100-vegan-50ml/15847,650.0,False,
+2,Plum,15848,1% Oat & Allantoin Deep Nourish Face Wash | with Vitamin F & B5 | Non-drying | 100% Vegan | 100 ml,https://maccaron.in/en/products/plum_1-oat-allantoin-deep-nourish-face-wash-with-vitamin-f-b5-non-drying-100-vegan-100-ml/15848,249.0,False,
+2,Plum,15849,1% Oat & Allantoin All-day Nourishing Cream | with Vitamin E & B5 |   Moisturizing | 100% Vegan | 50g,https://maccaron.in/en/products/plum_1-oat-allantoin-all-day-nourishing-cream-with-vitamin-e-b5-moisturizing-100-vegan-50g/15849,399.0,False,
+2,Plum,16258,Baby Plum Avocado Baby Wash,https://maccaron.in/en/products/plum_baby-plum-avocado-baby-wash/16258,349.0,False,
+2,Plum,16259,Baby Plum Avocado Baby Shampoo,https://maccaron.in/en/products/plum_baby-plum-avocado-baby-shampoo/16259,365.0,False,
+2,Plum,16260,Baby Plum Avocado Baby Lotion,https://maccaron.in/en/products/plum_baby-plum-avocado-baby-lotion/16260,399.0,False,
+2,Plum,16488,BodyLovin Best Selling Body Mists Sampler Pack,https://maccaron.in/en/products/plum_bodylovin-best-selling-body-mists-sampler-pack/16488,299.0,False,
+2,Plum,16489,Everyday Essentials Combo,https://maccaron.in/en/products/plum_everyday-essentials-combo/16489,1390.0,False,
+2,Plum,16493,Rice Water Hybrid Face Sunscreen with SPF 50+Niacinamide Clear Moisture Gel Cream+Niacinamide Face Serum,https://maccaron.in/en/products/plum_rice-water-hybrid-face-sunscreen-with-spf-50niacinamide-clear-moisture-gel-creamniacinamide-face-serum/16493,1573.0,False,
+2,Plum,16626,Cheek-A-Boo Shimmer Blush | Highly Pigmented | Effortless Blending | 125 Pink About You,https://maccaron.in/en/products/plum_cheek-a-boo-shimmer-blush-highly-pigmented-effortless-blending-125-pink-about-you/16626,499.0,False,
+2,Plum,16647,Cheek-A-Boo Shimmer Blush | Highly Pigmented | Effortless Blending |126 Orange You Lovely,https://maccaron.in/en/products/plum_cheek-a-boo-shimmer-blush-highly-pigmented-effortless-blending-126-orange-you-lovely/16647,499.0,False,
+2,Plum,16648,Cheek-A-Boo Shimmer Blush | Highly Pigmented | Effortless Blending | 127 Bare Necessity,https://maccaron.in/en/products/plum_cheek-a-boo-shimmer-blush-highly-pigmented-effortless-blending-127-bare-necessity/16648,499.0,False,
+2,Plum,16649,Cheek-A-Boo Shimmer Blush | Highly Pigmented | Effortless Blending | 128 Plum Intended,https://maccaron.in/en/products/plum_cheek-a-boo-shimmer-blush-highly-pigmented-effortless-blending-128-plum-intended/16649,499.0,False,
+2,Plum,16656,Coconut Milk & Peptides Strength & Shine shampoo | Enhances Hair's Shine and Strengthens Hair,https://maccaron.in/en/products/plum_coconut-milk-peptides-strength-shine-shampoo-enhances-hairs-shine-and-strengthens-hair/16656,149.0,False,
+2,Plum,16657,"Hibiscus & Ceramides Long & Healthy Shampoo|Helps Boost Hair Growth, Prevents Split Ends",https://maccaron.in/en/products/plum_hibiscus-ceramides-long-healthy-shampoohelps-boost-hair-growth-prevents-split-ends/16657,149.0,False,
+2,Plum,16658,BodyLovin' Fragrance Fiesta Gift Set | Ideal Gifting Choice | Bestselling Fragrances | 100% Vegan,https://maccaron.in/en/products/plum_bodylovin-fragrance-fiesta-gift-set-ideal-gifting-choice-bestselling-fragrances-100-vegan/16658,1495.0,False,
+2,Plum,16849,BodyLovin’ Smokin’ Vanilla Eau De Parfum (15 ml) | Warm Vanilla Fragrance | Long-lasting Perfume,https://maccaron.in/en/products/plum_bodylovin-smokin-vanilla-eau-de-parfum-15-ml-warm-vanilla-fragrance-long-lasting-perfume/16849,345.0,False,
+2,Plum,16850,BodyLovin' Hawaiian Rumba Perfumed Deodorant Spray | 2x Odor Control Molecules | Anti-bacterial Green Tea Extracts | Fresh,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-perfumed-deodorant-spray-2x-odor-control-molecules-anti-bacterial-green-tea-extracts-fresh/16850,325.0,False,
+2,Plum,16851,BodyLovin' Vanilla Vibes Perfumed Deodorant Spray | 2x Odor Control Molecules | Anti-bacterial Green Tea Extracts|Warm Vanilla,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-perfumed-deodorant-spray-2x-odor-control-molecules-anti-bacterial-green-tea-extractswarm-vanilla/16851,325.0,False,
+2,Plum,16855,"Green Tea Pore Cleansing Face Wash|Acne Face Wash|Oily Skin|Bright,Clear Skin|100% Vegan|Soap-Free | Face Wash for Men and Women",https://maccaron.in/en/products/plum_green-tea-pore-cleansing-face-washacne-face-washoily-skinbrightclear-skin100-vegansoap-free-face-wash-for-men-and-women/16855,275.0,False,
+2,Plum,16856,10% Niacinamide Face Serum |with Rice Water & Squalane| Brightens Skin|Clears Blemishes|Suits All Skin Types | Fragrance-Free,https://maccaron.in/en/products/plum_10-niacinamide-face-serum-with-rice-water-squalane-brightens-skinclears-blemishessuits-all-skin-types-fragrance-free/16856,249.0,False,
+2,Plum,16857,DERMA 2% Alpha Arbutin & Hyaluronic Acid Face Serum|Fades Tan|Brightens Ski|Controls Melanin Production|with Yuzu Lemon& Licoric,https://maccaron.in/en/products/plum_derma-2-alpha-arbutin-hyaluronic-acid-face-serumfades-tanbrightens-skicontrols-melanin-productionwith-yuzu-lemon-licoric/16857,599.0,False,
+2,Plum,16859,15% Vitamin C Face Serum|Boosts Glow | Reduces Dark Spots & Hyperpigmentation | with Pure Ethyl Ascorbic Acid|,https://maccaron.in/en/products/plum_15-vitamin-c-face-serumboosts-glow-reduces-dark-spots-hyperpigmentation-with-pure-ethyl-ascorbic-acid/16859,299.0,False,
+2,Plum,16860,There You Glow Highlighter | Highly Pigmented |Effortless Blending |121 - Champagne Pearl,https://maccaron.in/en/products/plum_there-you-glow-highlighter-highly-pigmented-effortless-blending-121-champagne-pearl/16860,499.0,False,
+2,Plum,16861,There You Glow Highlighter | Highly Pigmented |Effortless Blending |122 - Gold Touch,https://maccaron.in/en/products/plum_there-you-glow-highlighter-highly-pigmented-effortless-blending-122-gold-touch/16861,499.0,False,
+2,Plum,16862,There You Glow Highlighter | Highly Pigmented |Effortless Blending |123 - Rose n' Shine,https://maccaron.in/en/products/plum_there-you-glow-highlighter-highly-pigmented-effortless-blending-123-rose-n-shine/16862,499.0,False,
+2,Plum,16863,Plum There You Glow Highlighter | Highly Pigmented |Effortless Blending |124 - Miracle Bronze,https://maccaron.in/en/products/plum_plum-there-you-glow-highlighter-highly-pigmented-effortless-blending-124-miracle-bronze/16863,499.0,False,
+2,Plum,16866,Twist & Go Matte Lipstick | Airbrushed Finish | Long Lasting |Perky Pink - 132 (Fuchsia Pink),https://maccaron.in/en/products/plum_twist-go-matte-lipstick-airbrushed-finish-long-lasting-perky-pink-132-fuchsia-pink/16866,699.0,False,
+2,Plum,16868,Twist & Go Matte Lipstick | Airbrushed Finish | Long Lasting |Forrest Plum - 134 (Deep Plum),https://maccaron.in/en/products/plum_twist-go-matte-lipstick-airbrushed-finish-long-lasting-forrest-plum-134-deep-plum/16868,699.0,False,
+2,Plum,16881,Saffron & Kumkumadi Oil Glow Bright Moisturizer- With SPF 35,https://maccaron.in/en/products/plum_saffron-kumkumadi-oil-glow-bright-moisturizer-with-spf-35/16881,399.0,False,
+2,Plum,16882,"Saffron & Papaya Glow Bright Face Wash | Enhances Glow & Brightens Skin | With Vitamin B5 | Fights Dull Skin | Non-Drying,",https://maccaron.in/en/products/plum_saffron-papaya-glow-bright-face-wash-enhances-glow-brightens-skin-with-vitamin-b5-fights-dull-skin-non-drying/16882,249.0,False,
+2,Plum,16883,5% Niacinamide Face Serum | With Rice Water & Amino Acid Complex | Clears Blemishes & Improves Skin Texture | Brightens Skin,https://maccaron.in/en/products/plum_5-niacinamide-face-serum-with-rice-water-amino-acid-complex-clears-blemishes-improves-skin-texture-brightens-skin/16883,599.0,False,
+2,Plum,16884,Think DERMA 1% Resveratrol & Vitamin C Youthful Glow Moisturizer | Fights Signs of Ageing | Enhances Collagen Production |,https://maccaron.in/en/products/plum_think-derma-1-resveratrol-vitamin-c-youthful-glow-moisturizer-fights-signs-of-ageing-enhances-collagen-production/16884,599.0,False,
+2,Plum,16886,Think DERMA Salicylic & Lactic Acid Skin-smoothing Gel Moisturizer | Fights Acne | Improves Skin Texture | Hydrates & Smooth,https://maccaron.in/en/products/plum_think-derma-salicylic-lactic-acid-skin-smoothing-gel-moisturizer-fights-acne-improves-skin-texture-hydrates-smooth/16886,525.0,False,
+2,Plum,16888,Think DERMA 2% Niacinamide & Rice Water Clear Moisture Gel Cream | Fades Blemishes & Brightens Skin | with 3% Matmarine,https://maccaron.in/en/products/plum_think-derma-2-niacinamide-rice-water-clear-moisture-gel-cream-fades-blemishes-brightens-skin-with-3-matmarine/16888,525.0,False,
+2,Plum,16999,Lash Drama 1-4-All Mascara | Length + Curl + Volume + Definition |Cruelty Free | 01 Black,https://maccaron.in/en/products/plum_lash-drama-1-4-all-mascara-length-curl-volume-definition-cruelty-free-01-black/16999,599.0,False,
+2,Plum,17000,BodyLovin' Vanilla Caramello Body Lotion With Cocoa Butter & Vitamin B5 For Dry Skin,https://maccaron.in/en/products/plum_bodylovin-vanilla-caramello-body-lotion-with-cocoa-butter-vitamin-b5-for-dry-skin/17000,375.0,False,
+2,Plum,17016,BodyLovin’ Everythin' Plum Eau De Parfum (15 ml) | Fruity Fragrance | Long-lasting Perfume,https://maccaron.in/en/products/plum_bodylovin-everythin-plum-eau-de-parfum-15-ml-fruity-fragrance-long-lasting-perfume/17016,295.0,False,
+2,Plum,17022,BodyLovin' Magnifi-Scent Luxury Perfumes Gift Set | 4 Bestselling Fragrances | Ideal Gifting Option,https://maccaron.in/en/products/plum_bodylovin-magnifi-scent-luxury-perfumes-gift-set-4-bestselling-fragrances-ideal-gifting-option/17022,999.0,False,
+2,Plum,17087,"Niacinamide Bright Skin Essentials Travel Kit | With Niacinamide & Rice Water | Serum, Gel Moisturizer & SPF 50 Sunscreen",https://maccaron.in/en/products/plum_niacinamide-bright-skin-essentials-travel-kit-with-niacinamide-rice-water-serum-gel-moisturizer-spf-50-sunscreen/17087,573.0,False,
+2,Plum,17088,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 121 Caramel Crunch,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-121-caramel-crunch/17088,525.0,False,
+2,Plum,17089,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 122 Cherry Chocolate,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-122-cherry-chocolate/17089,525.0,False,
+2,Plum,17090,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 123 Watermelon Coulis,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-123-watermelon-coulis/17090,525.0,False,
+2,Plum,19508,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 124 Berry Overload,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-124-berry-overload/19508,525.0,False,
+2,Plum,19509,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 125 Black Currant,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-125-black-currant/19509,525.0,False,
+2,Plum,19510,Soft Swirl Lip Gloss | High-Shine Finish | Intense Pigment | 3 Shades In 1 | 126 Mississippi Mud,https://maccaron.in/en/products/plum_soft-swirl-lip-gloss-high-shine-finish-intense-pigment-3-shades-in-1-126-mississippi-mud/19510,525.0,False,
+2,Plum,19523,BodyLovin' Active-witty 1% Kojic Acid + Mango Butter Body Lotion,https://maccaron.in/en/products/plum_bodylovin-active-witty-1-kojic-acid-mango-butter-body-lotion/19523,425.0,False,
+2,Plum,19524,BodyLovin' Active-witty 1% Salicylic Acid Body Wash with Vitamin B5,https://maccaron.in/en/products/plum_bodylovin-active-witty-1-salicylic-acid-body-wash-with-vitamin-b5/19524,425.0,False,
+2,Plum,19525,BodyLovin' Active-witty 1% Glycolic Acid with Rosehip Oil Body Scrub,https://maccaron.in/en/products/plum_bodylovin-active-witty-1-glycolic-acid-with-rosehip-oil-body-scrub/19525,525.0,False,
+2,Plum,22418,Coconut Range Kit (Shampoo + Hair Mask + Hair Serum),https://maccaron.in/en/products/plum_coconut-range-kit-shampoo-hair-mask-hair-serum/22418,1374.0,False,
+2,Plum,25880,BodyLovin' Vanilla Vibes Body Mist (100 ml) | Vanilla Fragrance | Perfume Body Spray,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-body-mist-100-ml-vanilla-fragrance-perfume-body-spray/25880,375.0,False,
+2,Plum,25881,"Green Tea Renewed Clarity Night Gel Mini | Hydrates Skin & Fights Acne | Lightweight, Quick-Absorbing, Non-Sticky Gel Texture",https://maccaron.in/en/products/plum_green-tea-renewed-clarity-night-gel-mini-hydrates-skin-fights-acne-lightweight-quick-absorbing-non-sticky-gel-texture/25881,175.0,False,
+2,Plum,25882,1% Encapsulated Salicylic Acid Foaming Face Wash,https://maccaron.in/en/products/plum_1-encapsulated-salicylic-acid-foaming-face-wash/25882,325.0,False,
+2,Plum,25883,BodyLovin' Hawaiian Rumba Body Mist (100 ml) | Beachy Fragrance | Perfume Body Spray,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-body-mist-100-ml-beachy-fragrance-perfume-body-spray/25883,375.0,False,
+2,Plum,25884,BodyLovin' Vanilla Vibes Deodorant Roll-On 50gm,https://maccaron.in/en/products/plum_bodylovin-vanilla-vibes-deodorant-roll-on-50gm/25884,299.0,False,
+2,Plum,25885,BodyLovin' Hawaiian Rumba Deodorant Roll-On | 48 Hour Odor Control | Lactic Acid & Green Tea Extract | Fresh Beachy Fragrance,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-deodorant-roll-on-48-hour-odor-control-lactic-acid-green-tea-extract-fresh-beachy-fragrance/25885,299.0,False,
+2,Plum,25886,BodyLovin' Everythin' Plum Body Mist (100 ml) | Fruity Fragrance | Perfume Body Spray,https://maccaron.in/en/products/plum_bodylovin-everythin-plum-body-mist-100-ml-fruity-fragrance-perfume-body-spray/25886,375.0,False,
+2,Plum,25888,BodyLovin' Orchid-You-Not Body Mist (100 ml) | Floral Fragrance | Perfume Body Spray,https://maccaron.in/en/products/plum_bodylovin-orchid-you-not-body-mist-100-ml-floral-fragrance-perfume-body-spray/25888,375.0,False,
+2,Plum,25889,Green Tea & Zinc Complex 3% | Fights Pimples & Tightens Pores | Controls Oil & Gently Exfoliates (30 ml),https://maccaron.in/en/products/plum_green-tea-zinc-complex-3-fights-pimples-tightens-pores-controls-oil-gently-exfoliates-30-ml/25889,599.0,False,
+2,Plum,25890,Rice Water & 10% Niacinamide Serum 30ml,https://maccaron.in/en/products/plum_rice-water-10-niacinamide-serum-30ml/25890,649.0,False,
+2,Plum,25891,10% Niacinamide Face Serum with Rice Water | 15 ml,https://maccaron.in/en/products/plum_10-niacinamide-face-serum-with-rice-water-15-ml/25891,349.0,False,
+2,Plum,25892,Bright Years Restorative Overnight Crème 50gm,https://maccaron.in/en/products/plum_bright-years-restorative-overnight-creme-50gm/25892,1125.0,False,
+2,Plum,25893,Candy Melts Vegan Lip Balm Berry Feast 12gm,https://maccaron.in/en/products/plum_candy-melts-vegan-lip-balm-berry-feast-12gm/25893,295.0,False,
+2,Plum,25894,All-day defence creme SPF 45 50gm,https://maccaron.in/en/products/plum_all-day-defence-creme-spf-45-50gm/25894,875.0,False,
+2,Plum,25895,Green Tea Clear Face Mask 60gm,https://maccaron.in/en/products/plum_green-tea-clear-face-mask-60gm/25895,490.0,False,
+2,Plum,25896,BodyLovin' Coffee Wake-a-ccino Foot Cream 75g,https://maccaron.in/en/products/plum_bodylovin-coffee-wake-a-ccino-foot-cream-75g/25896,345.0,False,
+2,Plum,25897,Chamomile & White Tea Skin Revival Face Wash 75ml,https://maccaron.in/en/products/plum_chamomile-white-tea-skin-revival-face-wash-75ml/25897,350.0,False,
+2,Plum,25898,BodyLovin' Trippin' Mimosas Body Mist (100 ml) | Citrusy Fragrance | Perfume Body Spray,https://maccaron.in/en/products/plum_bodylovin-trippin-mimosas-body-mist-100-ml-citrusy-fragrance-perfume-body-spray/25898,375.0,False,
+2,Plum,25899,Chamomile & White Tea Brighten - Up Face Scrub 75ml,https://maccaron.in/en/products/plum_chamomile-white-tea-brighten-up-face-scrub-75ml/25899,375.0,False,
+2,Plum,25901,BodyLovin' Everythin' Plum Body Mist - 150 ml,https://maccaron.in/en/products/plum_bodylovin-everythin-plum-body-mist-150-ml/25901,525.0,False,
+2,Plum,25902,BodyLovin' Hawaiian Rumba Let's Get Beachin' Duo,https://maccaron.in/en/products/plum_bodylovin-hawaiian-rumba-lets-get-beachin-duo/25902,899.0,False,
+2,Plum,25903,"Turmeric & White Clay Acne Action Face Wash | Fights Acne & Controls Excess Oil | With Turmeric, White Clay & Orange Peel",https://maccaron.in/en/products/plum_turmeric-white-clay-acne-action-face-wash-fights-acne-controls-excess-oil-with-turmeric-white-clay-orange-peel/25903,249.0,False,
+2,Plum,25904,Body Lovin Driving me Cherry Shower Gel,https://maccaron.in/en/products/plum_body-lovin-driving-me-cherry-shower-gel/25904,380.0,False,
+2,Plum,25905,Body Lovin Driving me Cherry Gel Body Scrub,https://maccaron.in/en/products/plum_body-lovin-driving-me-cherry-gel-body-scrub/25905,550.0,False,
+2,Plum,25906,Chamomile & White Tea Calming Antioxidant Toner 200ml,https://maccaron.in/en/products/plum_chamomile-white-tea-calming-antioxidant-toner-200ml/25906,390.0,False,
+2,Plum,25907,Chamomile & White Tea Glow - Getter Face Mask 60gm,https://maccaron.in/en/products/plum_chamomile-white-tea-glow-getter-face-mask-60gm/25907,490.0,False,
+2,Plum,43691,BodyLovin’ 3-in-1 Body Mists Sampler Pack,https://maccaron.in/en/products/plum_bodylovin-3-in-1-body-mists-sampler-pack/43691,299.0,False,
+2,Plum,43692,Green Tea Mattifying Moisturizer,https://maccaron.in/en/products/plum_green-tea-mattifying-moisturizer/43692,275.0,False,
+2,Plum,43957,BodyLovin' Discovery Set,https://maccaron.in/en/products/plum_bodylovin-discovery-set/43957,499.0,False,
+2,Plum,44017,"Cica & Hyaluronic Acid Aqua-Light Sunscreen SPF 50 PA+++ | No White Cast, Lightweight, Non-Sticky |",https://maccaron.in/en/products/plum_cica-hyaluronic-acid-aqua-light-sunscreen-spf-50-pa-no-white-cast-lightweight-non-sticky/44017,399.0,False,
+2,Plum,44018,"Squalane & Vitamin E Dewy-Bright Sunscreen SPF 50 PA+++ | No White Cast, Lightweight, Non-Sticky |",https://maccaron.in/en/products/plum_squalane-vitamin-e-dewy-bright-sunscreen-spf-50-pa-no-white-cast-lightweight-non-sticky/44018,499.0,False,
+3,WOW Skin Science,13563,Himalayan Rose Foaming Face Wash - 100mL,https://maccaron.in/en/products/wow_himalayan-rose-foaming-face-wash-100ml/13563,349.0,False,
+2,Pilgrim,98718,Patua Anti-Grey Hair Serum,https://maccaron.in/en/products/pilgrim_patua-anti-grey-hair-serum/98718,750.0,False,
+2,Pilgrim,98719,Patua & Keratin Smoothing Hair Mask,https://maccaron.in/en/products/pilgrim_patua-keratin-smoothing-hair-mask/98719,550.0,True,
+2,Pilgrim,98720,Patua Leave-In Conditioner,https://maccaron.in/en/products/pilgrim_patua-leave-in-conditioner/98720,350.0,False,
+2,Pilgrim,98721,Patua & Keratin Hair Smoothing Conditioner,https://maccaron.in/en/products/pilgrim_patua-keratin-hair-smoothing-conditioner/98721,400.0,True,
+2,Pilgrim,98722,Patua Strengthening Hair Oil,https://maccaron.in/en/products/pilgrim_patua-strengthening-hair-oil/98722,400.0,False,
+2,Pilgrim,98723,10% Vitamin C Face Serum For Daily Brightness-10 Ml Reduces Dark Spots & Evens Skin Tone,https://maccaron.in/en/products/pilgrim_10-vitamin-c-face-serum-for-daily-brightness-10-ml-reduces-dark-spots-evens-skin-tone/98723,225.0,True,
+2,Pilgrim,98724,10% Vitamin C Face Serum For Daily Brightness-30 Ml Reduces Dark Spots & Evens Skin Tone,https://maccaron.in/en/products/pilgrim_10-vitamin-c-face-serum-for-daily-brightness-30-ml-reduces-dark-spots-evens-skin-tone/98724,545.0,True,
+2,Pilgrim,98725,15% Vitamin C Face Serum For Advanced Brightness-20Ml Reduces Hyperpigmentation,https://maccaron.in/en/products/pilgrim_15-vitamin-c-face-serum-for-advanced-brightness-20ml-reduces-hyperpigmentation/98725,545.0,True,
+2,Pilgrim,98726,Squalane Glow Moisturizer,https://maccaron.in/en/products/pilgrim_squalane-glow-moisturizer/98726,550.0,True,
+2,Pilgrim,98727,3% Redensyl & 4% Anagain Advanced Hair Growth Serum-30Ml,https://maccaron.in/en/products/pilgrim_3-redensyl-4-anagain-advanced-hair-growth-serum-30ml/98727,545.0,True,
+2,Pilgrim,98728,Redensyl & Anagain Advanced Hair Growth Serum-50 ml,https://maccaron.in/en/products/pilgrim_redensyl-anagain-advanced-hair-growth-serum-50-ml/98728,895.0,True,
+2,Pilgrim,98729,3% Redensyl & 4% Anagain Advanced Hair Growth Serum For Dandruff-Prone Scalp (30 Ml),https://maccaron.in/en/products/pilgrim_3-redensyl-4-anagain-advanced-hair-growth-serum-for-dandruff-prone-scalp-30-ml/98729,595.0,True,
+2,Pilgrim,98730,Australian Tea Tree Anti-Dandruff Conditioner Hydrates & Detangles Hair,https://maccaron.in/en/products/pilgrim_australian-tea-tree-anti-dandruff-conditioner-hydrates-detangles-hair/98730,395.0,True,
+2,Pilgrim,98731,Australian Tea Tree Anti-Dandruff Hair Mask Makes Hair Smooth & Deeply Moisturizes,https://maccaron.in/en/products/pilgrim_australian-tea-tree-anti-dandruff-hair-mask-makes-hair-smooth-deeply-moisturizes/98731,545.0,False,
+2,Pilgrim,98732,Australian Tea Tree Non-Drying Anti-Dandruff Shampoo Prevents Dandruff Recurrence,https://maccaron.in/en/products/pilgrim_australian-tea-tree-non-drying-anti-dandruff-shampoo-prevents-dandruff-recurrence/98732,345.0,True,
+2,Pilgrim,98733,Australian Tea Tree Anti-Dandruff Scalp Serum Relieves Itchiness & Reduces Inflammation,https://maccaron.in/en/products/pilgrim_australian-tea-tree-anti-dandruff-scalp-serum-relieves-itchiness-reduces-inflammation/98733,595.0,True,
+2,Pilgrim,98734,10% Niacinamide Face Serum For Acne Marks - 10Ml Fades Acne Marks & Evens Skin Tone,https://maccaron.in/en/products/pilgrim_10-niacinamide-face-serum-for-acne-marks-10ml-fades-acne-marks-evens-skin-tone/98734,225.0,True,
+2,Pilgrim,98735,10% Niacinamide Face Serum For Acne Marks - 30Ml Fades Acne Marks & Evens Skin Tone,https://maccaron.in/en/products/pilgrim_10-niacinamide-face-serum-for-acne-marks-30ml-fades-acne-marks-evens-skin-tone/98735,595.0,True,
+2,Pilgrim,98736,Glitter Lipstick |Glitter Formula With Matte Finish,https://maccaron.in/en/products/pilgrim_glitter-lipstick-glitter-formula-with-matte-finish/98736,645.0,True,
+2,Pilgrim,98737,"Liquid Matte Lipstick Transfer-Proof, Long-Lasting & Non-Drying",https://maccaron.in/en/products/pilgrim_liquid-matte-lipstick-transfer-proof-long-lasting-non-drying/98737,495.0,True,
+2,Pilgrim,98738,Matte Bullet Lipstick Intense Colour Transferproof & Smudgeproof,https://maccaron.in/en/products/pilgrim_matte-bullet-lipstick-intense-colour-transferproof-smudgeproof/98738,595.0,True,
+2,Pilgrim,121031,15% Vitamin C Face Serum For Advanced Brightness,https://maccaron.in/en/products/pilgrim_15-vitamin-c-face-serum-for-advanced-brightness/121031,446.9,False,8906120589628
+2,Pilgrim,121032,"2% Alpha Arbutin & 3% Vitamin C Brightening Serum, Fades Pigmentation & Brightens Skin",https://maccaron.in/en/products/pilgrim_2-alpha-arbutin-3-vitamin-c-brightening-serum-fades-pigmentation-brightens-skin/121032,569.9,False,8906120581370
+2,Pilgrim,121033,Spanish Rosemary Water With Biotin,https://maccaron.in/en/products/pilgrim_spanish-rosemary-water-with-biotin/121033,184.5,False,8904482501357
+2,Pilgrim,121034,Retinol Night Cream with Vitamin C & Hyaluronic Acid,https://maccaron.in/en/products/pilgrim_retinol-night-cream-with-vitamin-c-hyaluronic-acid/121034,533.0,False,8906120580502
+2,Pilgrim,121036,10% Niacinamide Face Serum For Acne Marks,https://maccaron.in/en/products/pilgrim_10-niacinamide-face-serum-for-acne-marks/121036,175.0,False,8906120589673
+2,Pilgrim,121037,"Sulfate Free Shampoo with Argan Oil, Camellia & White Lotus",https://maccaron.in/en/products/pilgrim_sulfate-free-shampoo-with-argan-oil-camellia-white-lotus/121037,327.75,False,8906120589147
+2,Pilgrim,121039,Redensyl & Anagain Hairfall Control Shampoo,https://maccaron.in/en/products/pilgrim_redensyl-anagain-hairfall-control-shampoo/121039,311.0,False,8906120589154
+2,Pilgrim,121040,Argan Oil Hair Mask with White Lotus & Camellia,https://maccaron.in/en/products/pilgrim_argan-oil-hair-mask-with-white-lotus-camellia/121040,506.0,False,8906120580090
+2,Pilgrim,121041,Korean Rice Water & Collagen Advanced Damage Repair Shampoo,https://maccaron.in/en/products/pilgrim_korean-rice-water-collagen-advanced-damage-repair-shampoo/121041,438.0,False,8904482502453
+2,Pilgrim,121042,Red Vine Night Gel Creme with Retinol Mulberry & Vitamin C,https://maccaron.in/en/products/pilgrim_red-vine-night-gel-creme-with-retinol-mulberry-vitamin-c/121042,533.0,False,8906120580328
+2,Pilgrim,121044,Retinol & Hyaluronic Acid Lift & Firm Serum,https://maccaron.in/en/products/pilgrim_retinol-hyaluronic-acid-lift-firm-serum/121044,533.0,False,8906120581363
+2,Pilgrim,121045,Red Vine Face Cream SPF 30 with Vitamin C & Rosehip Oil,https://maccaron.in/en/products/pilgrim_red-vine-face-cream-spf-30-with-vitamin-c-rosehip-oil/121045,451.0,False,8906120580311
+2,Pilgrim,121046,3% Redensyl & 4% Anagain Advanced Hair Growth Serum,https://maccaron.in/en/products/pilgrim_3-redensyl-4-anagain-advanced-hair-growth-serum/121046,487.9,False,8904482501487
+2,Pilgrim,121052,24k Gold Gel Moisturizer With Hyaluronic Acid & Alpha Arbutin,https://maccaron.in/en/products/pilgrim_24k-gold-gel-moisturizer-with-hyaluronic-acid-alpha-arbutin/121052,651.9,False,8906120587471
+2,Pilgrim,121053,Korean Rice Water & Collagen Advanced Damage Repair Hair Mask,https://maccaron.in/en/products/pilgrim_korean-rice-water-collagen-advanced-damage-repair-hair-mask/121053,487.9,False,8904482502422
+2,Pilgrim,121054,Red Vine Face Wash with Vitamin C & Aloe,https://maccaron.in/en/products/pilgrim_red-vine-face-wash-with-vitamin-c-aloe/121054,287.0,False,8906120580373
+2,Pilgrim,121064,Korean Rice Water & Collagen Advanced Damage Repair Shampoo,https://maccaron.in/en/products/pilgrim_korean-rice-water-collagen-advanced-damage-repair-shampoo/121064,289.75,False,8904482502446
+2,Pilgrim,121065,Spanish Rosemary & Biotin Hair Growth Oil,https://maccaron.in/en/products/pilgrim_spanish-rosemary-biotin-hair-growth-oil/121065,327.75,False,8906120587839
+2,Pilgrim,121066,White Lotus Day Cream SPF 50 with Camellia & Yugdugu,https://maccaron.in/en/products/pilgrim_white-lotus-day-cream-spf-50-with-camellia-yugdugu/121066,410.0,False,8906120580076
+2,Pilgrim,121067,5% Vitamin C Complex Brightening Serum Sunscreen SPF50+PA++++ In-Vivo tested,https://maccaron.in/en/products/pilgrim_5-vitamin-c-complex-brightening-serum-sunscreen-spf50pa-in-vivo-tested/121067,405.9,False,8904482501814
+2,Pilgrim,121069,Red Vine Face Scrub with Mulberry & Aloe,https://maccaron.in/en/products/pilgrim_red-vine-face-scrub-with-mulberry-aloe/121069,410.0,False,8906120580410
+2,Pilgrim,121070,Spanish Rosemary & Biotin Anti-Hairfall Conditioner,https://maccaron.in/en/products/pilgrim_spanish-rosemary-biotin-anti-hairfall-conditioner/121070,282.9,False,8906120587815
+2,Pilgrim,121071,Korean Rice Water & Collagen Advanced Damage Repair Conditioner,https://maccaron.in/en/products/pilgrim_korean-rice-water-collagen-advanced-damage-repair-conditioner/121071,323.9,False,8904482502439
+2,Pilgrim,121072,Red Vine Face Mist & Toner with Vitamin B3 & Aloe,https://maccaron.in/en/products/pilgrim_red-vine-face-mist-toner-with-vitamin-b3-aloe/121072,246.0,False,8906120580403
+2,Pilgrim,121073,Korean Rice Water Hydra Glow Light Gel Moisturizer,https://maccaron.in/en/products/pilgrim_korean-rice-water-hydra-glow-light-gel-moisturizer/121073,225.5,False,8904482502118
+2,Pilgrim,121074,Rootactive Anti-Hairfall Serum,https://maccaron.in/en/products/pilgrim_rootactive-anti-hairfall-serum/121074,470.25,False,8904482501494
+2,Pilgrim,121075,24K Gold Facial Mask for Glowing & Radiant Skin Depigmentation,https://maccaron.in/en/products/pilgrim_24k-gold-facial-mask-for-glowing-radiant-skin-depigmentation/121075,487.9,False,8906120582353
+2,Pilgrim,121076,Salicylic (BHA) & Glycolic Acid (AHA) Foaming Face Wash,https://maccaron.in/en/products/pilgrim_salicylic-bha-glycolic-acid-aha-foaming-face-wash/121076,282.9,False,8906120582421
+2,Pilgrim,121077,24K Gold Face Serum with Niacinamide & Hyaluronic Acid,https://maccaron.in/en/products/pilgrim_24k-gold-face-serum-with-niacinamide-hyaluronic-acid/121077,569.9,False,8906120583886
+2,Pilgrim,121078,Australian Tea Tree Anti-Dandruff Conditioner For Hydrates & Detangles Hair,https://maccaron.in/en/products/pilgrim_australian-tea-tree-anti-dandruff-conditioner-for-hydrates-detangles-hair/121078,323.9,False,8906120589727
+2,Pilgrim,121079,Vitamin C Gel Face Wash Wth Kakadu Plum & Lime Pearl,https://maccaron.in/en/products/pilgrim_vitamin-c-gel-face-wash-wth-kakadu-plum-lime-pearl/121079,205.0,True,8906120586740
+2,Neutrogena,19046,Deep Clean Acne Foaming Cleanser 220g+40g,https://maccaron.in/en/products/neutrogena_deep-clean-acne-foaming-cleanser-220g40g/19046,1212.0,False,
+2,Neutrogena,19068,Deep Clean Gentle Foaming Cleanser 220g+50g,https://maccaron.in/en/products/neutrogena_deep-clean-gentle-foaming-cleanser-220g50g/19068,1028.0,False,
+2,Neutrogena,19071,Deep Clean Gentle Foaming Cleanser,https://maccaron.in/en/products/neutrogena_deep-clean-gentle-foaming-cleanser/19071,1028.0,False,
+2,Neutrogena,19096,Deep Clean Hydrating Foaming Cleanser 175g,https://maccaron.in/en/products/neutrogena_deep-clean-hydrating-foaming-cleanser-175g/19096,836.0,False,
+2,Neutrogena,19097,Deep Clean Acne Foaming Cleanser 100g,https://maccaron.in/en/products/neutrogena_deep-clean-acne-foaming-cleanser-100g/19097,412.0,False,
+2,Neutrogena,19098,Deep Clean Gentle Foaming Cleanser 100g,https://maccaron.in/en/products/neutrogena_deep-clean-gentle-foaming-cleanser-100g/19098,400.0,False,
+2,Neutrogena,19192,Deep Clean Foaming Cleanser 175g,https://maccaron.in/en/products/neutrogena_deep-clean-foaming-cleanser-175g/19192,740.0,False,
+2,Neutrogena,19272,Deep Clean Cleansing Oil 200ml+Gentle Foaming C;eanser 50g,https://maccaron.in/en/products/neutrogena_deep-clean-cleansing-oil-200mlgentle-foaming-ceanser-50g/19272,1500.0,False,
+2,Neutrogena,19307,Deep Clean Cleansing Oil 200ml+200ml,https://maccaron.in/en/products/neutrogena_deep-clean-cleansing-oil-200ml200ml/19307,3212.0,False,
+2,Neutrogena,19344,Deep Clean Micellar Puifying Water 400ml,https://maccaron.in/en/products/neutrogena_deep-clean-micellar-puifying-water-400ml/19344,836.0,False,
+2,Neutrogena,19842,Rainbath Ocean Mist Replenishing Shower and Bath Gel 473ml,https://maccaron.in/en/products/neutrogena_rainbath-ocean-mist-replenishing-shower-and-bath-gel-473ml/19842,836.0,False,
+2,Neutrogena,19843,Rainbath Pear & Green Tea Renewing Shower and bath gel 473ml,https://maccaron.in/en/products/neutrogena_rainbath-pear-green-tea-renewing-shower-and-bath-gel-473ml/19843,836.0,False,
+2,Neutrogena,19844,Rainbath Refreshing Shower and Bath Gel 473ml,https://maccaron.in/en/products/neutrogena_rainbath-refreshing-shower-and-bath-gel-473ml/19844,836.0,False,
+2,Neutrogena,19973,Intense Repair Cica Emulsion 310ml Floral,https://maccaron.in/en/products/neutrogena_intense-repair-cica-emulsion-310ml-floral/19973,1508.0,False,
+2,Neutrogena,20007,Intense Repair Cica Emulsion 310ml,https://maccaron.in/en/products/neutrogena_intense-repair-cica-emulsion-310ml/20007,1508.0,False,
+2,Neutrogena,20088,Visibly Renew Body Lotion Duo (450ml+450ml),https://maccaron.in/en/products/neutrogena_visibly-renew-body-lotion-duo-450ml450ml/20088,1517.0,False,
+2,Neutrogena,20089,Daily Body Lotion Duo (450ml+450ml),https://maccaron.in/en/products/neutrogena_daily-body-lotion-duo-450ml450ml/20089,1325.0,False,
+2,Neutrogena,20125,Body Oil Light Sesame Formula 473ml,https://maccaron.in/en/products/neutrogena_body-oil-light-sesame-formula-473ml/20125,1884.0,False,
+2,Neutrogena,20126,Body Oil Light Sesame Formula 250ml+Cica Emulsion 88ml,https://maccaron.in/en/products/neutrogena_body-oil-light-sesame-formula-250mlcica-emulsion-88ml/20126,932.0,False,
+2,Neutrogena,20147,Visibly Renew Body Lotion 450ml,https://maccaron.in/en/products/neutrogena_visibly-renew-body-lotion-450ml/20147,1212.0,False,
+2,Neutrogena,20167,Visibly Renew Body Lotion 450ml+Yoga Socks,https://maccaron.in/en/products/neutrogena_visibly-renew-body-lotion-450mlyoga-socks/20167,1212.0,False,
+2,Neutrogena,20188,Intense Repair Multi Oil Stick 17g,https://maccaron.in/en/products/neutrogena_intense-repair-multi-oil-stick-17g/20188,932.0,False,
+2,Neutrogena,20245,Body Oil Light Sesame Formula 250ml,https://maccaron.in/en/products/neutrogena_body-oil-light-sesame-formula-250ml/20245,932.0,False,
+2,Neutrogena,20413,Intense Repair Cica Hand Cream Duo (56g+56g),https://maccaron.in/en/products/neutrogena_intense-repair-cica-hand-cream-duo-56g56g/20413,692.0,False,
+2,Neutrogena,20445,Intense REpair Cica Hand Cream 56g,https://maccaron.in/en/products/neutrogena_intense-repair-cica-hand-cream-56g/20445,400.0,False,
+2,Neutrogena,20774,Intense Repair Foot Cream Duo (56g+56g),https://maccaron.in/en/products/neutrogena_intense-repair-foot-cream-duo-56g56g/20774,932.0,False,
+2,Neutrogena,20808,Intense Repair Foot Cream 56g,https://maccaron.in/en/products/neutrogena_intense-repair-foot-cream-56g/20808,400.0,False,
+2,Neutrogena,75798,Intense Repair Cicamel Emulsion 310ml Set,https://maccaron.in/en/products/neutrogena_intense-repair-cicamel-emulsion-310ml-set/75798,1580.0,False,
+2,Neutrogena,76004,Deep Clean Cleansing Oil 200ml,https://maccaron.in/en/products/neutrogena_deep-clean-cleansing-oil-200ml/76004,1580.0,False,
+2,Neutrogena,76028,Deep Clean Cleansing Cream 285ml,https://maccaron.in/en/products/neutrogena_deep-clean-cleansing-cream-285ml/76028,1253.75,False,
+2,Neutrogena,76033,Deep Clean Cleansing Lotion 200ml,https://maccaron.in/en/products/neutrogena_deep-clean-cleansing-lotion-200ml/76033,743.75,False,

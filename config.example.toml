@@ -1,0 +1,7 @@
+# Copy to config.toml (git-ignored) and fill in. Env vars override these:
+# KEEPA_KEY, AMAZON_TAG, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+
+keepa_key = ""            # https://keepa.com/#!api  (paid; tokens per minute)
+amazon_tag = "skinkaredealz-21"           # your Associates tracking ID, e.g. skinkare-21
+telegram_token = ""       # from @BotFather
+telegram_chat_id = "@SkinKareDealz"     # "@yourchannel" for a public channel, or the -100... id

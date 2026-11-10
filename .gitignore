@@ -1,0 +1,5 @@
+config.toml
+data/prices.db
+outbox/
+__pycache__/
+logs/
