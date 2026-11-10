@@ -11,6 +11,10 @@ on:
   schedule:
     - cron: "17 */6 * * *"        # UTC 00:17, 06:17, 12:17, 18:17 = IST 05:47, 11:47, 17:47, 23:47
   workflow_dispatch:
+    inputs:
+      maccaron_every:
+        description: "Refetch Maccaron if its last fetch is older than N hours (0 = always)"
+        default: "12"
 
 concurrency:
   group: price-tracking           # never two runs writing prices.db at once
@@ -51,7 +55,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
           KEEPA_KEY: ${{ secrets.KEEPA_KEY }}
         # --dry-run: nothing is posted. Remove it here when you want auto-posting.
-        run: python -m skd.run --dry-run --maccaron-delay 1 --maccaron-every 12 2>&1 | tee run.log
+        run: python -m skd.run --dry-run --maccaron-delay 1 --maccaron-every "${{ inputs.maccaron_every || '12' }}" 2>&1 | tee run.log
 
       - name: Summary
         if: always()
