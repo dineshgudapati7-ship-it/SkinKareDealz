@@ -3,14 +3,14 @@
 # State: data/prices.db lives on the orphan branch `data` as ONE commit that is
 # force-pushed after each run, so git history doesn't grow by ~1.5 MB per run.
 #
-# Budget (private repo = 2,000 free minutes/month): 4 runs/day x ~6 min (Purplle) -> ~720 min/month.
+# Budget (private repo = 2,000 free minutes/month): 8 runs/day x ~6 min (Purplle) -> ~1,440 min/month.
 # Maccaron is OFF here: it answers GitHub's datacenter IPs with 403 (verified 2026-11-10;
 # the same page returns 200 from a home connection). Don't try to get around that block.
 name: price tracking
 
 on:
   schedule:
-    - cron: "17 */6 * * *"        # UTC 00:17, 06:17, 12:17, 18:17 = IST 05:47, 11:47, 17:47, 23:47
+    - cron: "17 */3 * * *"        # every 3 h at :17 UTC = IST 05:47, 08:47, 11:47, 14:47, 17:47, 20:47, 23:47, 02:47
   workflow_dispatch:
 
 concurrency:
