@@ -16,10 +16,10 @@ from datetime import datetime
 from pathlib import Path
 
 from . import db, deals, posts, telegram
-from .sources import keepa, maccaron, manual, purplle
+from .sources import keepa, maccaron, manual, nykaa, purplle
 
 ROOT = Path(__file__).resolve().parent.parent
-FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8}   # older "current" prices are ignored
+FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 13}   # older "current" prices are ignored
 
 
 def load_config(path):
@@ -131,10 +131,55 @@ def ingest_maccaron(conn, products, now, log, delay=2.0, force=False, every_hour
     log(f"maccaron: priced {priced}/{len(watched)} watched products ({gone} pages gone)")
 
 
+NYKAA_EVERY_HOURS = 12      # ~180 pages at 1 req / 3 s = ~9 min, so twice a day fits the Actions budget
+
+
+def ingest_nykaa(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, force=False,
+                 every_hours=NYKAA_EVERY_HOURS):
+    """Re-read Nykaa brand pages (slow and steady) and record a price for every watched nyk-<id>.
+    The first refusal stops Nykaa for this run; prices fetched before it are kept."""
+    watched = {p.product_id: p for p in products if p.store == "nykaa"}
+    if not watched:
+        log("nykaa: skipped (no nykaa products in watchlist)")
+        return
+    last = conn.execute("SELECT MAX(ts) FROM price_checks WHERE source='nykaa'").fetchone()[0]
+    if not force and last and now - last < (every_hours - 0.5) * 3600:
+        log(f"nykaa: skipped (last fetched {(now - last) / 3600:.1f}h ago)")
+        return
+    wanted = {p.brand for p in watched.values()}
+    paths = []
+    if Path(brands_file).exists():
+        with open(brands_file, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r["brand"] in wanted:
+                    paths += [s for s in (r.get("nykaa_paths") or "").split("|") if s and s != "-"]
+    seen = pages = 0
+    for i, path in enumerate(paths):
+        if i and delay:
+            time.sleep(max(delay, nykaa.MIN_DELAY))
+        try:
+            items = nykaa.fetch_brand(path, delay=delay, log=lambda m: None)
+        except nykaa.Blocked as e:
+            log(f"nykaa: STOP — {e}; keeping what was fetched so far")
+            break
+        except Exception as e:                      # one bad brand shouldn't kill the run
+            log(f"nykaa: {path} failed ({e})")
+            continue
+        pages += 1
+        for it in items:
+            pid = f"nyk-{it['nykaa_id']}"
+            if pid in watched:
+                ok = it["in_stock"] and it["price"] is not None
+                db.record_price(conn, pid, now, it["price"] if ok else None, ok, "nykaa")
+                seen += 1
+        conn.commit()
+    log(f"nykaa: priced {seen}/{len(watched)} watched products from {pages}/{len(paths)} brand pages")
+
+
 def latest_check(conn, product_id, now):
     row = conn.execute(
         "SELECT ts, price, in_stock, source FROM price_checks WHERE product_id=? "
-        "AND source IN ('keepa','manual','purplle','maccaron') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
+        "AND source IN ('keepa','manual','purplle','maccaron','nykaa') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
     if not row or now - row[0] > FRESH_HOURS[row[3]] * 3600:
         return None
     return row
@@ -179,6 +224,10 @@ def main(argv=None):
     ap.add_argument("--maccaron-delay", type=float, default=2.0, help=argparse.SUPPRESS)
     ap.add_argument("--maccaron-every", type=float, default=MACCARON_EVERY_HOURS,
                     help="refetch Maccaron at most every N hours (default %(default)s)")
+    ap.add_argument("--no-nykaa", action="store_true", help="skip the Nykaa price fetch")
+    ap.add_argument("--nykaa-delay", type=float, default=nykaa.MIN_DELAY, help=argparse.SUPPRESS)
+    ap.add_argument("--nykaa-every", type=float, default=NYKAA_EVERY_HOURS,
+                    help="refetch Nykaa at most every N hours (default %(default)s)")
     ap.add_argument("--now", type=int, help=argparse.SUPPRESS)  # for tests
     a = ap.parse_args(argv)
     log = lambda m: print(m, file=sys.stderr)
@@ -200,6 +249,8 @@ def main(argv=None):
         ingest_purplle(conn, products, a.brands_file, now, log, a.purplle_delay)
     if not a.no_maccaron:
         ingest_maccaron(conn, products, now, log, a.maccaron_delay, every_hours=a.maccaron_every)
+    if not a.no_nykaa:
+        ingest_nykaa(conn, products, a.brands_file, now, log, a.nykaa_delay, every_hours=a.nykaa_every)
 
     can_telegram = cfg.get("telegram_token") and cfg.get("telegram_chat_id")
     wa_lines, posted = [], 0

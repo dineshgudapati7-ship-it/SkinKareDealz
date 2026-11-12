@@ -2,6 +2,7 @@
 
     python -m skd.catalog                 # tiers 2-5 from data/brands.csv
     python -m skd.catalog --tiers 2 --brands "Minimalist,Plum"
+    python -m skd.catalog --stores nykaa  # opt-in; needs scrapling, 1 request / 3 s
 
 For every brand with Purplle slugs it fetches all products (variants expanded),
 saves a dated snapshot with prices to data/catalog/, and merges the products
@@ -15,7 +16,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from .sources import maccaron, purplle
+from .sources import maccaron, nykaa, purplle
 
 ROOT = Path(__file__).resolve().parent.parent
 WATCH_FIELDS = ["product_id", "name", "brand", "size", "store", "asin", "url",
@@ -23,6 +24,9 @@ WATCH_FIELDS = ["product_id", "name", "brand", "size", "store", "asin", "url",
 PURPLLE_FIELDS = ["tier", "brand", "purplle_id", "name", "size", "url", "mrp", "price", "in_stock",
                   "offer", "offer_ids"]
 MACCARON_FIELDS = ["tier", "brand", "maccaron_id", "name", "url", "price", "in_stock", "ean"]
+NYKAA_FIELDS = ["tier", "brand", "nykaa_id", "sku", "name", "size", "type", "url", "mrp", "price",
+                "in_stock"]
+NOT_ON_NYKAA = "-"          # nykaa_paths value: searched, no brand page found
 
 
 def read_brands(path, tiers, only=None):
@@ -73,7 +77,8 @@ def main(argv=None):
     only = {b.strip() for b in a.brands.split(",")} if a.brands else None
     brands = read_brands(a.brands_file, set(a.tiers.split(",")), only)
     stores = {s.strip() for s in a.stores.split(",")}
-    builders = {"purplle": build_purplle, "maccaron": build_maccaron}
+    builders = {"purplle": build_purplle, "maccaron": build_maccaron,
+                "nykaa": lambda b, d, l: build_nykaa(b, d, l, a.brands_file)}
     snap_dir = Path(a.snapshot_dir)
     snap_dir.mkdir(parents=True, exist_ok=True)
     for store, build in builders.items():
@@ -82,6 +87,10 @@ def main(argv=None):
         log(f"== {store}")
         snap_rows, watch_rows, fields, missing = build(brands, a.delay, log)
         snap = snap_dir / f"{store}_{date.today():%Y-%m-%d}.csv"
+        if snap.exists():           # a partial (--brands) rerun the same day: keep the other brands' rows
+            ran = {b["brand"] for b in brands}
+            with snap.open(newline="", encoding="utf-8") as f:
+                snap_rows = [r for r in csv.DictReader(f) if r.get("brand") not in ran] + snap_rows
         with snap.open("w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
             w.writeheader()
@@ -151,6 +160,62 @@ def build_maccaron(brands, delay, log):
     except maccaron.Blocked as e:
         log(f"STOP: {e} — not retrying.")
     return snap_rows, watch_rows, MACCARON_FIELDS, missing
+
+def save_nykaa_paths(brands_file, resolved):
+    """Write {brand: 'path|path' or '-'} into the nykaa_paths column of brands.csv."""
+    with open(brands_file, newline="", encoding="utf-8") as f:
+        r = csv.DictReader(f)
+        fields, rows = list(r.fieldnames), list(r)
+    if "nykaa_paths" not in fields:
+        fields.append("nykaa_paths")
+    for row in rows:
+        if row["brand"] in resolved:
+            row["nykaa_paths"] = resolved[row["brand"]]
+    with open(brands_file, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        w.writerows(rows)
+
+
+def build_nykaa(brands, delay, log, brands_file=None):
+    """Brand pages on nykaa.com, slow and steady; the whole store stops at the first refusal."""
+    delay = max(delay, nykaa.MIN_DELAY)
+    snap_rows, watch_rows, missing, resolved = [], [], [], {}
+    first = True
+    try:
+        for b in brands:
+            paths = (b.get("nykaa_paths") or "").strip()
+            if not paths:
+                if not first:
+                    time.sleep(delay)
+                first = False
+                found = nykaa.find_brand_path(b["brand"])
+                paths = resolved[b["brand"]] = found or NOT_ON_NYKAA
+                log(f"{b['brand']}: brand page {'-> ' + found if found else 'not found'}")
+            if paths == NOT_ON_NYKAA:
+                missing.append(b["brand"])
+                continue
+            seen = set()
+            for path in paths.split("|"):
+                if not first:
+                    time.sleep(delay)
+                first = False
+                for it in nykaa.fetch_brand(path, delay=delay, log=log):
+                    if it["nykaa_id"] in seen:
+                        continue
+                    seen.add(it["nykaa_id"])
+                    snap_rows.append({"tier": b["tier"], "brand": b["brand"], **it})
+                    watch_rows.append({"product_id": f"nyk-{it['nykaa_id']}", "name": it["name"],
+                                       "brand": b["brand"], "size": it["size"],
+                                       "store": "nykaa", "url": it["url"]})
+            log(f"{b['brand']}: {len(seen)} products")
+    except nykaa.Blocked as e:
+        log(f"STOP: {e} — not retrying.")
+    finally:
+        if resolved and brands_file:
+            save_nykaa_paths(brands_file, resolved)
+    return snap_rows, watch_rows, NYKAA_FIELDS, missing
+
 
 if __name__ == "__main__":
     main()

@@ -49,7 +49,7 @@ class EndToEnd(unittest.TestCase):
     def run_pipeline(self, *extra):
         args = ["--config", str(self.tmp / "config.toml"), "--db", str(self.tmp / "p.db"),
                 "--watchlist", str(self.tmp / "watchlist.csv"), "--manual", str(self.tmp / "manual.csv"),
-                "--outbox", str(self.tmp / "outbox"), "--now", str(NOW), *extra]
+                "--outbox", str(self.tmp / "outbox"), "--now", str(NOW), "--no-nykaa", *extra]
         out, err = io.StringIO(), io.StringIO()
         with mock.patch.object(keepa, "fetch_products", return_value=self.products), \
                 contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):

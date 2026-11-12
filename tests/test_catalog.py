@@ -55,5 +55,24 @@ class MergeTest(unittest.TestCase):
             self.assertEqual(rows[0]["affiliate_url"], "AFF")
 
 
+class SnapshotMergeTest(unittest.TestCase):
+    def test_partial_rerun_keeps_other_brands(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "brands.csv").write_text("tier,brand,purplle_slugs\n2,A,a\n2,B,b\n", encoding="utf-8")
+            fake = lambda slug, **k: [{"purplle_id": slug + "1", "name": "n", "size": "", "url": "u",
+                                       "mrp": 1, "price": 1, "in_stock": True, "offer": "", "offer_ids": ""}]
+            args = ["--brands-file", str(d / "brands.csv"), "--watchlist", str(d / "w.csv"),
+                    "--snapshot-dir", str(d / "snap"), "--stores", "purplle", "--tiers", "2"]
+            with mock.patch.object(purplle, "fetch_brand", side_effect=fake),                     mock.patch("sys.stderr"):
+                catalog.main(args)
+                catalog.main(args + ["--brands", "B"])
+            snap = next((d / "snap").iterdir())
+            with snap.open(encoding="utf-8") as f:
+                ids = sorted(r["purplle_id"] for r in csv.DictReader(f))
+            self.assertEqual(ids, ["a1", "b1"])
+
+
 if __name__ == "__main__":
     unittest.main()

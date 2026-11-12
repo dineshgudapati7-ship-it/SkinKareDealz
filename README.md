@@ -2,7 +2,7 @@
 
 A price tracker that finds *real* skincare deals. It posts them to a Telegram channel automatically and queues WhatsApp-ready text for you to paste into your WhatsApp Channel by hand.
 
-Pure Python 3.11+ standard library. No installs needed.
+Pure Python 3.11+ standard library. No installs needed, except Scrapling for the opt-in Nykaa catalogue (see Nykaa below).
 
 ## How a deal is decided (`skd/deals.py`)
 MRP is ignored. A product counts as a deal only when it is **in stock**, has **at least 7 days of history**, and meets one of these:
@@ -55,7 +55,18 @@ Every `python -m skd.run` also fetches the Purplle brand pages for the brands in
 
 The pipeline fetches each watched Maccaron page at most once every 6 hours, about 15 minutes per pass. Skip it with `--no-maccaron`.
 
-Tira and Nykaa both answer scripted requests with 403 (bot protection), so they are deliberately not fetched.
+Tira answers scripted requests with 403 (bot protection), so it is deliberately not fetched.
+
+## Nykaa
+Nykaa's bot protection (Akamai) blocks plain scripts, robots.txt included. On 2026-11-11 the owner chose to fetch it anyway with [Scrapling](https://github.com/D4Vinci/Scrapling), whose `Fetcher` presents a real Chrome TLS fingerprint. The conditions are **slow and steady**: at most 1 request every 3 s (`nykaa.MIN_DELAY`, never lower), a full stop at the first refusal, and no proxies or retries to get around a block. Doing this can put Nykaa's own affiliate program (NAP) at risk.
+
+```
+pip install "scrapling[fetchers]"
+python -m skd.catalog --stores nykaa
+```
+For each brand, the first run searches Nykaa once and stores the brand-page path in `data/brands.csv` → `nykaa_paths`. `-` means no brand page was found; edit the cell by hand to fix it. It then reads the brand pages, 20 listings each, and saves `data/catalog/nykaa_<date>.csv` with prices. It upserts `store=nykaa` rows (`nyk-<id>`) into the watchlist. A size-variant listing shows its default size's price. Other sizes appear as their own rows when Nykaa lists them separately, with `?skuId=` URLs.
+
+**Price tracking:** `python -m skd.run` re-reads the brand pages of every brand that has `nyk-…` rows in the watchlist, and records a price for each one (`source=nykaa`). That's about 180 pages at 1 every 3 s, roughly 9 minutes. To save Actions minutes it runs at most every 12 h (`--nykaa-every`). Skip it with `--no-nykaa`. A refusal (any non-200, or a page with no product data) stops Nykaa for that run and keeps the prices already recorded.
 
 ## Data sources
 - **Amazon:** the Keepa API. On the first run it backfills about 90 days of price history, so deal detection works from day one.
