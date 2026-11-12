@@ -239,12 +239,16 @@ def ingest_flipkart(conn, products, now, log, delay=nykaa.MIN_DELAY, force=False
 
 
 TIRA_PAGES = 150   # product pages per run (~9 min at 1 / 3 s); see ingest_tira
+TIRA_PAGE_AGE = 20  # hours: a product page is refetched only once its last price is older than this
 
 
-def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, max_pages=TIRA_PAGES):
+def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, max_pages=TIRA_PAGES,
+                min_age_hours=TIRA_PAGE_AGE):
     """Brand pages (top 12 per brand) every run, then up to max_pages product pages for the
     watched Tira products whose last price is oldest, so the whole Tira list is refreshed in
-    rotation. A refusal anywhere stops Tira for this run."""
+    rotation. Products priced less than min_age_hours ago are left alone, so however often the
+    workflow runs, each product page is fetched about once a day at most. A refusal anywhere
+    stops Tira for this run."""
     watched = [p for p in products if p.store == "tira"]
     if not watched:
         log("tira: skipped (no tira products in watchlist)")
@@ -254,13 +258,14 @@ def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, ma
                         lambda s: tira.fetch_brand(s, log=lambda m: None), now, log, delay):
         return
     if max_pages > 0:
-        ingest_tira_pages(conn, watched, now, log, delay, max_pages)
+        ingest_tira_pages(conn, watched, now, log, delay, max_pages, min_age_hours)
 
 
-def ingest_tira_pages(conn, watched, now, log, delay, max_pages):
+def ingest_tira_pages(conn, watched, now, log, delay, max_pages, min_age_hours=TIRA_PAGE_AGE):
     last = dict(conn.execute("SELECT product_id, MAX(ts) FROM price_checks "
                              "WHERE source IN ('tira','tira-page') GROUP BY product_id").fetchall())
-    due = sorted((p for p in watched if p.url and last.get(p.product_id, 0) < now),
+    cutoff = now - min_age_hours * 3600
+    due = sorted((p for p in watched if p.url and last.get(p.product_id, 0) < min(cutoff, now)),
                  key=lambda p: last.get(p.product_id, 0))[:max_pages]
     priced = gone = 0
     for p in due:
@@ -347,6 +352,8 @@ def main(argv=None):
     ap.add_argument("--no-tira", action="store_true", help="skip the Tira price fetch")
     ap.add_argument("--tira-pages", type=int, default=TIRA_PAGES,
                     help="Tira product pages per run, stalest first (default %(default)s; 0 = brand pages only)")
+    ap.add_argument("--tira-page-age", type=float, default=TIRA_PAGE_AGE,
+                    help="refetch a Tira product page only if its price is older than N hours (default %(default)s)")
     ap.add_argument("--now", type=int, help=argparse.SUPPRESS)  # for tests
     a = ap.parse_args(argv)
     log = lambda m: print(m, file=sys.stderr)
@@ -373,7 +380,7 @@ def main(argv=None):
     if not a.no_flipkart:
         ingest_flipkart(conn, products, now, log, a.nykaa_delay, every_hours=a.flipkart_every)
     if not a.no_tira:
-        ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay, a.tira_pages)
+        ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay, a.tira_pages, a.tira_page_age)
 
     can_telegram = cfg.get("telegram_token") and cfg.get("telegram_chat_id")
     wa_lines, posted = [], 0

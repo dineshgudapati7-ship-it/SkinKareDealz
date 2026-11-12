@@ -227,11 +227,13 @@ class Ingest(unittest.TestCase):
 
     def test_product_page_rotation(self):
         wl = self.tmp / "watchlist.csv"
-        wl.write_text(wl.read_text(encoding="utf-8") + "tira-9,S,Plum,,tira,,u9,,,\ntira-10,S,Plum,,tira,,u10,,,\n",
+        wl.write_text(wl.read_text(encoding="utf-8") + "tira-9,S,Plum,,tira,,u9,,,\ntira-10,S,Plum,,tira,,u10,,,\n"
+                      "tira-11,S,Plum,,tira,,u11,,,\n",
                       encoding="utf-8")
         conn = db.connect(self.tmp / "p.db")
         db.record_price(conn, "tira-9", NOW - 50 * 3600, 400.0, True, "tira-page")     # tira-8: never priced
         db.record_price(conn, "tira-10", NOW - 90 * 3600, 400.0, True, "tira-page")
+        db.record_price(conn, "tira-11", NOW - 5 * 3600, 400.0, True, "tira-page")      # too recent
         conn.commit()
         conn.close()
 
@@ -246,10 +248,14 @@ class Ingest(unittest.TestCase):
         # tira-7 was just priced by its brand page; then the stalest two: tira-8 (never), tira-10 (90 h)
         self.assertEqual([c.args[0] for c in self.product.call_args_list], ["u", "u10"])
         self.assertIn("tira-page: priced 1, 1 gone, of 2 due", err)
+        # A second run with room for all: only tira-9 (50 h) is due; tira-11 (5 h) is too recent,
+        # and tira-7/-8/-10 were just priced.
+        _, _, err = self.run_pipeline(lambda b, **kw: [], brand, product_fetch=page, extra=["--tira-pages", "9"])
+        self.assertEqual([c.args[0] for c in self.product.call_args_list], ["u9"])
         conn = db.connect(self.tmp / "p.db")
         rows = conn.execute("SELECT product_id, price, in_stock FROM price_checks WHERE source='tira-page' "
                             "AND ts=? ORDER BY product_id", (NOW,)).fetchall()
-        self.assertEqual(rows, [("tira-10", None, 0), ("tira-8", 450.0, 1)])
+        self.assertEqual(rows, [("tira-10", None, 0), ("tira-8", 450.0, 1), ("tira-9", 450.0, 1)])
         self.assertIsNotNone(run.latest_check(conn, "tira-8", NOW + 20 * 3600))   # fresh for a day
         conn.close()
 
