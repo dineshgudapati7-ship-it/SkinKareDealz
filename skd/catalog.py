@@ -52,8 +52,11 @@ def merge_watchlist(path, new_rows):
     for n in new_rows:
         cur = index.get(n["product_id"])
         if cur:
-            changed = any(cur.get(k) != n[k] for k in ("name", "brand", "size", "url"))
-            cur.update({k: n[k] for k in ("name", "brand", "size", "store", "url", "ean") if k in n})
+            changed = any(cur.get(k) != n[k] for k in ("name", "brand", "size", "url")
+                          if not (k == "size" and not n[k]))
+            # An empty size never wipes one we filled in (e.g. skd.nykaa_sizes).
+            cur.update({k: n[k] for k in ("name", "brand", "size", "store", "url", "ean")
+                        if k in n and not (k == "size" and not n[k] and cur.get("size"))})
             updated += changed
         else:
             row = {k: "" for k in WATCH_FIELDS} | n

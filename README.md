@@ -39,6 +39,8 @@ Meta has no official API for posting to Channels, so WhatsApp posting stays manu
 It saves a dated snapshot with prices in `data/catalog/` and upserts `store=purplle` rows into `data/watchlist.csv`. Rerunning it adds new launches and keeps the affiliate links, ingredients and skin types you've filled in. Brands with an empty `purplle_slugs` aren't on Purplle; source those from Amazon later.
 
 ## Purplle price tracking
+**The checkout price comes from product pages.** Purplle's brand listings often show less than the product page and the cart. On 2026-11-12, 12 of 20 sampled products differed (₹366 listed vs ₹425 in the cart), and no listing field predicts which. So every run also reads up to 600 product pages (`/product/<id>`, allowed by robots.txt), stalest first, each at most once per 20 h, and records them as `source=purplle-page` (`--purplle-pages`, 0 = off). The listing prices are still stored as `source=purplle`, but only for diagnosis: they never count as the current price or as history.
+
 Every `python -m skd.run` also fetches the Purplle brand pages for the brands in your watchlist and records a price for each `pur-…` product. That's about 160 requests at 1 every 2 s, roughly 5 minutes. Skip it with `--no-purplle`.
 
 `track.cmd` runs this in record-only mode (`--dry-run`) and appends the output to `logs/track.log`. Schedule it every 3 hours with Windows Task Scheduler.
@@ -81,3 +83,21 @@ python -m skd.catalog --stores flipkart,tira
 ## Data sources
 - **Amazon:** the Keepa API. On the first run it backfills about 90 days of price history, so deal detection works from day one.
 - **Brand sites:** not scraped. They block automated requests with HTTP 429. Use network feeds or manual prices for these.
+
+## Price-check bot (`skd/bot.py`)
+People DM the bot a product link from Nykaa, Purplle, Flipkart, Tira, Maccaron or Amazon, or type a product name. The bot replies with the current price of **that exact product** (same size and pack) on every store we track, cheapest first. Typed names get up to 5 buttons to pick from.
+
+```
+python -m skd.bot                          # run it (long polling; Ctrl+C stops)
+python -m skd.bot --ask "<link or name>"   # print the reply offline, no Telegram
+```
+- **Token:** the same `telegram_token` the channel poster uses. The bot only answers private chats.
+- **Prices:** copied from `origin/data:prices.db` into `data/bot_prices.db` every hour (`--refresh-hours`). The tracker's own DB is never touched. Stale prices are hidden, using the same freshness windows as `skd.run` (`FRESH_HOURS`), so a reply never quotes an old price as current.
+- **Matching (`skd/match.py`):** the brand, product type, active %, SPF and pack count must be identical, and combos never match. Size has to be equal, with g and ml treated as the same unit. Then the name words are compared. A listing with no size (about 30% of Nykaa rows) is shown as a link only, "size not shown there, so not compared", because those listings carry the default size's price. **Check:** the same SKU has the same printed MRP everywhere, and about 94% of exact matches agree on it (`tests/test_match.py::RealCatalogue`). Most of the rest are reseller or old-stock MRPs.
+- **Links:** we use the watchlist's `affiliate_url` when there is one, or the Amazon tag; otherwise the plain store page. The `#ad` disclosure appears only when an affiliate link is actually in the reply. EarnKaro links add "open in your browser", because app purchases aren't tracked.
+- **Requests:** every query is logged in `data/bot.db` → `queries`. `found=0` rows are links we don't track yet, so you can see which products to add:
+  `sqlite3 data/bot.db "SELECT text, COUNT(*) n FROM queries WHERE found=0 GROUP BY text ORDER BY n DESC"`
+- **Short links** (`dl.flipkart.com/s/…`, `amzn.in`, EarnKaro): the bot sends one HEAD request per hop and reads only the redirect target, never the page. Only known store/shortener hosts are followed.
+- **Hosting:** it has to run on an always-on machine (it's a loop, not a cron job). Running it on the Windows PC is fine to start.
+- **Live prices:** for Purplle rows the bot reads the product page when someone asks (cached 30 min, at most 1 request/s, paused for an hour after a refusal). Otherwise it uses the tracked price. Other stores use tracked prices only.
+- **Nykaa sizes:** about 30% of Nykaa listings are multi-size products with no size in the brand listing. `python -m skd.nykaa_sizes` reads each one's product page (Scrapling, ≥3 s, stop at the first refusal) into `data/nykaa_sizes.csv` and fills the watchlist's empty size cells. A later catalogue run never blanks a filled size. Where that hasn't run, the bot works the size out from the MRP if exactly one size elsewhere has the same MRP.

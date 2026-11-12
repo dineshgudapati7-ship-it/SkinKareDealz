@@ -22,6 +22,12 @@ CREATE TABLE IF NOT EXISTS posts (
 """
 
 
+# Recorded for diagnosis only: Purplle's brand-listing price is often below what the product
+# page and cart charge, so it is never history or a current price (see run.ingest_purplle_pages).
+LISTING_ONLY = ("purplle",)
+_NOT_LISTING = f"source NOT IN ({','.join(repr(s) for s in LISTING_ONLY)})"
+
+
 def connect(path: str | Path) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path))
     conn.executescript(SCHEMA)
@@ -39,7 +45,7 @@ def history(conn, product_id, since_ts):
     """[(ts, price)] for in-stock checks since since_ts, oldest first."""
     rows = conn.execute(
         "SELECT ts, price FROM price_checks WHERE product_id=? AND ts>=? "
-        "AND in_stock=1 AND price IS NOT NULL ORDER BY ts",
+        f"AND in_stock=1 AND price IS NOT NULL AND {_NOT_LISTING} ORDER BY ts",
         (product_id, int(since_ts)),
     )
     return rows.fetchall()
@@ -49,7 +55,7 @@ def last_before(conn, product_id, ts):
     """Most recent in-stock (ts, price) strictly before ts, or None."""
     return conn.execute(
         "SELECT ts, price FROM price_checks WHERE product_id=? AND ts<? "
-        "AND in_stock=1 AND price IS NOT NULL ORDER BY ts DESC LIMIT 1",
+        f"AND in_stock=1 AND price IS NOT NULL AND {_NOT_LISTING} ORDER BY ts DESC LIMIT 1",
         (product_id, int(ts)),
     ).fetchone()
 

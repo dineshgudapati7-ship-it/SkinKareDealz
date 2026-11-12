@@ -3,3 +3,6 @@ data/prices.db
 outbox/
 __pycache__/
 logs/
+data/bot.db
+data/bot_prices.db
+data/bot_prices.db.tmp

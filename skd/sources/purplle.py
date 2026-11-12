@@ -79,7 +79,7 @@ def parse_items(body):
                 "purplle_id": pid,
                 "name": name,
                 "size": size,
-                "url": f"{BASE}/{it['url']}" if own and it.get("url") else f"{BASE}/product/{pid}",
+                "url": f"{BASE}/product/{it['url']}" if own and it.get("url") else f"{BASE}/product/{pid}",
                 "mrp": _num(v.get("price")),
                 "price": _num(v.get("offer_price") or v.get("our_price")),
                 "in_stock": str(v.get("stock_status")) == "1",
@@ -103,3 +103,53 @@ def fetch_brand(slug, delay=2.0, max_pages=60, opener=urllib.request.urlopen, lo
             break
         time.sleep(delay)
     return out
+
+
+# ---------- product pages: the price you actually pay ----------
+# The brand-listing JSON above is NOT the checkout price. On 2026-11-12, 12 of 20 sampled
+# products listed lower than their product page (e.g. 366 vs 425; the cart showed 425), and
+# no listing field (iselite, our_price, specialofferPrice) predicted which. The product page
+# /product/<id> carries the offer for that exact size in an `availability` block, plus a
+# schema.org Offer. Those are what we record as the current price (source purplle-page).
+
+class NotFound(RuntimeError):
+    pass
+
+
+_AVAIL = re.compile(r"availability:\$R\[\d+\]=\{([^{}]*)")
+_KV = re.compile(r'(\w+):(?:"([^"]*)"|(-?[\d.]+))')
+_LD_OFFER = re.compile(r'"offers":\{"@type":"Offer","availability":"[^"]*?(\w+)","price":"([\d.]+)"')
+PAGE_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
+
+
+def parse_product_page(html):
+    """{'mrp', 'price', 'in_stock'} for the size the page is for. NotFound if the page holds
+    no offer at all."""
+    m = _AVAIL.search(html)
+    if m:
+        kv = {k: (s if s is not None else n) for k, s, n in _KV.findall(m.group(1))}
+        price, mrp = _num(kv.get("offerPrice") or kv.get("ourPrice")), _num(kv.get("mrp"))
+        in_stock = str(kv.get("stockStatus")) == "1" and bool(price)
+    else:
+        ld = _LD_OFFER.search(html)
+        if not ld:
+            raise NotFound("purplle page without an offer")
+        price, mrp = _num(ld.group(2)), None
+        in_stock = ld.group(1) == "InStock" and bool(price)
+    return {"mrp": mrp or None, "price": price if in_stock else None, "in_stock": in_stock}
+
+
+def fetch_product(product_id, opener=urllib.request.urlopen, timeout=20):
+    """Live offer for one pur-<id> / <id>. Blocked on 403/429, NotFound on 404."""
+    pid = str(product_id).removeprefix("pur-")
+    req = urllib.request.Request(f"{BASE}/product/{pid}", headers={"User-Agent": PAGE_UA})
+    try:
+        with opener(req, timeout=timeout) as r:
+            html = r.read().decode("utf-8", "ignore")
+    except urllib.error.HTTPError as e:
+        if e.code in (403, 429):
+            raise Blocked(f"purplle returned {e.code} for product {pid}") from e
+        if e.code == 404:
+            raise NotFound(f"purplle product {pid} not found") from e
+        raise
+    return parse_product_page(html)

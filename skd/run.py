@@ -19,7 +19,7 @@ from . import db, deals, posts, telegram
 from .sources import flipkart, keepa, maccaron, manual, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
-FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8, "tira-page": 26}   # older "current" prices are ignored
+FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8, "tira-page": 26, "purplle-page": 26}   # older "current" prices are ignored
 
 
 def load_config(path):
@@ -92,6 +92,54 @@ def ingest_purplle(conn, products, brands_file, now, log, delay=2.0):
                 seen += 1
         conn.commit()
     log(f"purplle: priced {seen}/{len(watched)} watched products from {len(slugs)} brand pages")
+
+
+PURPLLE_PAGES = 600     # product pages per run (~25 min at 1 / 2 s): the whole list in ~6 runs
+PURPLLE_PAGE_AGE = 20   # hours before a product page is due again
+
+
+def ingest_purplle_pages(conn, products, now, log, delay=2.0, max_pages=PURPLLE_PAGES,
+                         min_age_hours=PURPLLE_PAGE_AGE, fetch=purplle.fetch_product, sleep=time.sleep):
+    """The checkout price: Purplle's brand listings often show less than the product page and
+    the cart (12 of 20 sampled on 2026-11-12), so the current Purplle price comes only from
+    product pages (source purplle-page). Stalest first, each page at most once per
+    min_age_hours, in rotation across runs. A 403/429 stops Purplle pages for this run."""
+    watched = [p for p in products if p.store == "purplle"]
+    if not watched or max_pages <= 0:
+        return
+    last = dict(conn.execute("SELECT product_id, MAX(ts) FROM price_checks "
+                             "WHERE source='purplle-page' GROUP BY product_id").fetchall())
+    # In-stock-by-listing first: those are the ones people can buy and ask about.
+    listed = dict(conn.execute("SELECT product_id, in_stock FROM price_checks p WHERE source='purplle' "
+                               "AND ts=(SELECT MAX(ts) FROM price_checks q WHERE q.product_id=p.product_id "
+                               "AND q.source='purplle')").fetchall())
+    cutoff = now - min_age_hours * 3600
+    due = sorted((p for p in watched if last.get(p.product_id, 0) < cutoff),
+                 key=lambda p: (not listed.get(p.product_id, 0), last.get(p.product_id, 0)))[:max_pages]
+    priced = gone = 0
+    for i, p in enumerate(due):
+        if i:
+            sleep(delay)
+        try:
+            it = fetch(p.product_id)
+        except purplle.NotFound:
+            db.record_price(conn, p.product_id, now, None, False, "purplle-page")
+            gone += 1
+            continue
+        except purplle.Blocked as e:
+            log(f"purplle-page: STOP — {e}; keeping what was fetched so far")
+            break
+        except Exception as e:
+            log(f"purplle-page: {p.product_id} failed ({e})")
+            continue
+        db.record_price(conn, p.product_id, now, it["price"], it["in_stock"], "purplle-page")
+        priced += 1
+        if priced % 25 == 0:
+            conn.commit()
+    conn.commit()
+    covered = sum(1 for p in watched if last.get(p.product_id)) + priced
+    log(f"purplle-page: priced {priced}, {gone} gone, of {len(due)} due "
+        f"({min(covered, len(watched))}/{len(watched)} watched have a page price)")
 
 
 MACCARON_EVERY_HOURS = 6     # one page per product, so refresh less often than Purplle
@@ -297,7 +345,8 @@ def ingest_tira_pages(conn, watched, now, log, delay, max_pages, min_age_hours=T
 def latest_check(conn, product_id, now):
     row = conn.execute(
         "SELECT ts, price, in_stock, source FROM price_checks WHERE product_id=? "
-        "AND source IN ('keepa','manual','purplle','maccaron','nykaa','flipkart','tira','tira-page') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
+        "AND source IN ('keepa','manual','purplle-page','maccaron','nykaa','flipkart','tira','tira-page') "
+        "ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
     if not row or now - row[0] > FRESH_HOURS[row[3]] * 3600:
         return None
     return row
@@ -338,6 +387,8 @@ def main(argv=None):
     ap.add_argument("--brands-file", default=str(ROOT / "data" / "brands.csv"))
     ap.add_argument("--no-purplle", action="store_true", help="skip the Purplle price fetch")
     ap.add_argument("--purplle-delay", type=float, default=2.0, help=argparse.SUPPRESS)
+    ap.add_argument("--purplle-pages", type=int, default=PURPLLE_PAGES,
+                    help="Purplle product pages per run, stalest first (default %(default)s; 0 = none)")
     ap.add_argument("--no-maccaron", action="store_true", help="skip the Maccaron price fetch")
     ap.add_argument("--maccaron-delay", type=float, default=2.0, help=argparse.SUPPRESS)
     ap.add_argument("--maccaron-every", type=float, default=MACCARON_EVERY_HOURS,
@@ -373,6 +424,7 @@ def main(argv=None):
     conn.commit()
     if not a.no_purplle:
         ingest_purplle(conn, products, a.brands_file, now, log, a.purplle_delay)
+        ingest_purplle_pages(conn, products, now, log, a.purplle_delay, a.purplle_pages)
     if not a.no_maccaron:
         ingest_maccaron(conn, products, now, log, a.maccaron_delay, every_hours=a.maccaron_every)
     if not a.no_nykaa:

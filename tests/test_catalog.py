@@ -26,7 +26,7 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(rows[1]["name"], "Brand SPF 50 Sunscreen")
         self.assertEqual(rows[1]["size"], "30 gm")
         self.assertEqual(rows[1]["url"], "https://www.purplle.com/product/2")
-        self.assertEqual(rows[0]["url"], "https://www.purplle.com/brand-spf-50g")
+        self.assertEqual(rows[0]["url"], "https://www.purplle.com/product/brand-spf-50g")
         self.assertFalse(rows[1]["in_stock"])
         self.assertEqual(rows[2]["price"], 270.0)   # falls back to our_price
         self.assertEqual(rows[2]["name"], "Brand Cleanser")

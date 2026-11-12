@@ -5,7 +5,9 @@
 #
 # Budget: the repo is PUBLIC since 2026-11-12, so standard runners cost nothing. Measured on runners:
 #   Purplle ~6 min + Tira ~3 min brand pages every run, + up to ~60 min of Tira product pages;
-#   Nykaa ~15 min and Flipkart ~15 min at most once per 24 h (skd.run gates them).
+#   Nykaa ~15 min and Flipkart ~15 min at most once per 24 h (skd.run gates them);
+#   Purplle product pages, up to 600 per run (~25-30 min), each at most once per 20 h. Those are the
+#   checkout price: Purplle's brand listings often understate it (12 of 20 sampled, 2026-11-12).
 #   If the repo goes private again (2,000 free min/month), set --tira-pages back to ~40:
 #   ~1,700 min/month at the ~3 runs/day GitHub has actually been starting.
 # Nykaa, Flipkart and Tira are fetched with Scrapling (Chrome TLS) by the owner's choice:
@@ -29,7 +31,7 @@ permissions:
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 150          # Nykaa + Flipkart (~30 min, daily) + up to ~60 min of Tira pages
+    timeout-minutes: 180          # Nykaa + Flipkart (~30 min, daily) + ~60 min Tira + ~30 min Purplle pages
     steps:
       - uses: actions/checkout@v5
 
