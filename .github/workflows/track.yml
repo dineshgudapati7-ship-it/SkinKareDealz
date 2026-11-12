@@ -3,10 +3,12 @@
 # State: data/prices.db lives on the orphan branch `data` as ONE commit that is
 # force-pushed after each run, so git history doesn't grow by ~1.5 MB per run.
 #
-# Budget (private repo = 2,000 free minutes/month): ~6 min (Purplle) per run, plus ~9 min for Nykaa
-# at most every 12 h (skd.run gates it). At the full 8 runs/day that is ~2,100 min/month (slightly over),
-# but GitHub has actually been starting these only every ~7-9 h (~1,200 min/month). Check Settings -> Billing.
-# Nykaa: fetched with Scrapling (Chrome TLS) by the owner's choice, 1 req / 3 s, stops on the first refusal.
+# Budget (private repo = 2,000 free minutes/month), measured on runners 2026-11-12:
+#   Purplle ~6 min + Tira ~3 min every run; Nykaa ~15 min and Flipkart ~15 min at most once per 24 h
+#   (skd.run gates them). GitHub has been starting this only every ~7-9 h (~3 runs/day) -> ~1,700 min/month.
+#   If it ever runs the full 8/day, that becomes ~2,800: raise --nykaa-every/--flipkart-every or cut the cron.
+# Nykaa, Flipkart and Tira are fetched with Scrapling (Chrome TLS) by the owner's choice:
+#   1 request / 3 s, a single attempt per request, and a full stop at the first refusal.
 # Maccaron is OFF here: it answers GitHub's datacenter IPs with 403 (verified 2026-11-10;
 # the same page returns 200 from a home connection). Don't try to get around that block.
 name: price tracking
@@ -26,7 +28,7 @@ permissions:
 jobs:
   track:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
 

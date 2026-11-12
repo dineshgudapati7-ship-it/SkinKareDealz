@@ -3,6 +3,7 @@
     python -m skd.catalog                 # tiers 2-5 from data/brands.csv
     python -m skd.catalog --tiers 2 --brands "Minimalist,Plum"
     python -m skd.catalog --stores nykaa  # opt-in; needs scrapling, 1 request / 3 s
+    python -m skd.catalog --stores flipkart,tira   # same method (Tira: top 12 per brand)
 
 For every brand with Purplle slugs it fetches all products (variants expanded),
 saves a dated snapshot with prices to data/catalog/, and merges the products
@@ -16,7 +17,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from .sources import maccaron, nykaa, purplle
+from .sources import flipkart, maccaron, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
 WATCH_FIELDS = ["product_id", "name", "brand", "size", "store", "asin", "url",
@@ -26,6 +27,8 @@ PURPLLE_FIELDS = ["tier", "brand", "purplle_id", "name", "size", "url", "mrp", "
 MACCARON_FIELDS = ["tier", "brand", "maccaron_id", "name", "url", "price", "in_stock", "ean"]
 NYKAA_FIELDS = ["tier", "brand", "nykaa_id", "sku", "name", "size", "type", "url", "mrp", "price",
                 "in_stock"]
+FLIPKART_FIELDS = ["tier", "brand", "flipkart_id", "name", "size", "url", "mrp", "price", "in_stock"]
+TIRA_FIELDS = ["tier", "brand", "tira_id", "name", "size", "url", "mrp", "price", "in_stock"]
 NOT_ON_NYKAA = "-"          # nykaa_paths value: searched, no brand page found
 
 
@@ -78,7 +81,9 @@ def main(argv=None):
     brands = read_brands(a.brands_file, set(a.tiers.split(",")), only)
     stores = {s.strip() for s in a.stores.split(",")}
     builders = {"purplle": build_purplle, "maccaron": build_maccaron,
-                "nykaa": lambda b, d, l: build_nykaa(b, d, l, a.brands_file)}
+                "nykaa": lambda b, d, l: build_nykaa(b, d, l, a.brands_file),
+                "flipkart": build_flipkart,
+                "tira": lambda b, d, l: build_tira(b, d, l, a.brands_file)}
     snap_dir = Path(a.snapshot_dir)
     snap_dir.mkdir(parents=True, exist_ok=True)
     for store, build in builders.items():
@@ -161,16 +166,16 @@ def build_maccaron(brands, delay, log):
         log(f"STOP: {e} — not retrying.")
     return snap_rows, watch_rows, MACCARON_FIELDS, missing
 
-def save_nykaa_paths(brands_file, resolved):
-    """Write {brand: 'path|path' or '-'} into the nykaa_paths column of brands.csv."""
+def save_nykaa_paths(brands_file, resolved, column="nykaa_paths"):
+    """Write {brand: 'path|path' or '-'} into a column (default nykaa_paths) of brands.csv."""
     with open(brands_file, newline="", encoding="utf-8") as f:
         r = csv.DictReader(f)
         fields, rows = list(r.fieldnames), list(r)
-    if "nykaa_paths" not in fields:
-        fields.append("nykaa_paths")
+    if column not in fields:
+        fields.append(column)
     for row in rows:
         if row["brand"] in resolved:
-            row["nykaa_paths"] = resolved[row["brand"]]
+            row[column] = resolved[row["brand"]]
     with open(brands_file, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
@@ -215,6 +220,73 @@ def build_nykaa(brands, delay, log, brands_file=None):
         if resolved and brands_file:
             save_nykaa_paths(brands_file, resolved)
     return snap_rows, watch_rows, NYKAA_FIELDS, missing
+
+
+def build_flipkart(brands, delay, log):
+    """Search each brand on flipkart.com (slow and steady); stops at the first refusal."""
+    delay = max(delay, nykaa.MIN_DELAY)
+    snap_rows, watch_rows, missing = [], [], []
+    try:
+        for i, b in enumerate(brands):
+            if i:
+                time.sleep(delay)
+            items = flipkart.fetch_brand(b["brand"], delay=delay, log=log)
+            if not items:
+                missing.append(b["brand"])
+            for it in items:
+                snap_rows.append({"tier": b["tier"], "brand": b["brand"], **it})
+                watch_rows.append({"product_id": f"fk-{it['flipkart_id']}", "name": it["name"],
+                                   "brand": b["brand"], "size": it["size"],
+                                   "store": "flipkart", "url": it["url"]})
+    except nykaa.Blocked as e:
+        log(f"STOP: {e} — not retrying.")
+    return snap_rows, watch_rows, FLIPKART_FIELDS, missing
+
+
+def build_tira(brands, delay, log, brands_file=None):
+    """Top 12 products per brand page on tirabeauty.com; stops at the first refusal."""
+    delay = max(delay, nykaa.MIN_DELAY)
+    snap_rows, watch_rows, missing, resolved = [], [], [], {}
+    try:
+        slugs = None
+        for b in brands:
+            known = (b.get("tira_slug") or "").strip()
+            if known == NOT_ON_NYKAA:
+                missing.append(b["brand"])
+                continue
+            if known:
+                candidates = [known]
+            else:
+                if slugs is None:
+                    slugs = tira.brand_slugs()
+                    time.sleep(delay)
+                listed = tira.slug_for(slugs, b["brand"])
+                candidates = [listed] if listed else tira.guess_slugs(b["brand"])
+            rows = slug = None
+            for cand in candidates:
+                time.sleep(delay)
+                try:
+                    got = tira.fetch_brand(cand, log=log)
+                except tira.NotFound:
+                    continue
+                if known or tira.is_brand(got, b["brand"]):
+                    rows, slug = got, cand
+                    break
+            if not known:
+                resolved[b["brand"]] = slug or NOT_ON_NYKAA
+            if not rows:
+                missing.append(b["brand"])
+                continue
+            for it in rows:
+                snap_rows.append({"tier": b["tier"], "brand": b["brand"], **it})
+                watch_rows.append({"product_id": f"tira-{it['tira_id']}", "name": it["name"],
+                                   "brand": b["brand"], "size": "", "store": "tira", "url": it["url"]})
+    except nykaa.Blocked as e:
+        log(f"STOP: {e} — not retrying.")
+    finally:
+        if resolved and brands_file:
+            save_nykaa_paths(brands_file, resolved, column="tira_slug")
+    return snap_rows, watch_rows, TIRA_FIELDS, missing
 
 
 if __name__ == "__main__":

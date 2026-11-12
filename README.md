@@ -66,7 +66,16 @@ python -m skd.catalog --stores nykaa
 ```
 For each brand, the first run searches Nykaa once and stores the brand-page path in `data/brands.csv` → `nykaa_paths`. `-` means no brand page was found; edit the cell by hand to fix it. It then reads the brand pages, 20 listings each, and saves `data/catalog/nykaa_<date>.csv` with prices. It upserts `store=nykaa` rows (`nyk-<id>`) into the watchlist. A size-variant listing shows its default size's price. Other sizes appear as their own rows when Nykaa lists them separately, with `?skuId=` URLs.
 
-**Price tracking:** `python -m skd.run` re-reads the brand pages of every brand that has `nyk-…` rows in the watchlist, and records a price for each one (`source=nykaa`). That's about 180 pages at 1 every 3 s, roughly 9 minutes. To save Actions minutes it runs at most every 12 h (`--nykaa-every`). Skip it with `--no-nykaa`. A refusal (any non-200, or a page with no product data) stops Nykaa for that run and keeps the prices already recorded.
+**Price tracking:** `python -m skd.run` re-reads the brand pages of every brand that has `nyk-…` rows in the watchlist, and records a price for each one (`source=nykaa`). That's about 180 pages at 1 every 3 s, roughly 15 minutes on a GitHub runner. To save Actions minutes it runs at most every 24 h (`--nykaa-every`). Skip it with `--no-nykaa`. A refusal (any non-200, or a page with no product data) stops Nykaa for that run and keeps the prices already recorded.
+
+## Flipkart and Tira
+On 2026-11-12 the owner extended the same Scrapling method to these two stores, with the same rules: at least 3 s between requests, one attempt per request, a full stop at the first refusal, and no proxies.
+
+```
+python -m skd.catalog --stores flipkart,tira
+```
+- **Flipkart** (`fk-<pid>`): searches `/search?q=<brand>&page=N`. robots.txt allows this, but not `sort=` or `facets=`, so neither is used. Only titles that start with the brand name are kept, and a brand stops after 2 pages with no match. That gave 3,202 products from 38 brands. **Many listings come from third-party resellers** (e.g. La Roche-Posay, imported Kiehl's), and some are non-skincare (Patanjali). Check the seller before posting. Tracked by `skd.run` at most every 24 h (`--flipkart-every`, `--no-flipkart`), about 225 pages and roughly 15 minutes.
+- **Tira** (`tira-<uid>`): reads each brand page `/brand/<slug>`, which server-renders only its **top 12 products**. "Load more" uses Tira's app-token API, which we don't use. Slugs come from the brand sitemap (only about 200 brands), or are guessed from the name and accepted only if the page's products are that brand. They are stored in `brands.csv` → `tira_slug` (`-` = not on Tira). It takes about 40 requests, so it runs on every `skd.run` (`--no-tira`). A full Tira catalogue would need one product page per product, about 2 h for our brands, and isn't built.
 
 ## Data sources
 - **Amazon:** the Keepa API. On the first run it backfills about 90 days of price history, so deal detection works from day one.

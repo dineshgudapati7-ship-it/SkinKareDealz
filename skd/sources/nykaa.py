@@ -33,8 +33,11 @@ class Blocked(RuntimeError):
 
 
 def _default_get(url):
-    from scrapling.fetchers import Fetcher          # lazy: only Nykaa needs it
-    page = Fetcher.get(url, impersonate="chrome", timeout=30)
+    import logging
+    from scrapling.fetchers import Fetcher          # lazy: only the Scrapling stores need it
+    logging.getLogger("scrapling").setLevel(logging.WARNING)   # no "Fetched (200)" line per page
+    # retries=1: a single attempt. No automatic re-sends, even after a timeout. Slow and steady.
+    page = Fetcher.get(url, impersonate="chrome", timeout=30, retries=1)
     return page.status, page.url, page.html_content
 
 
@@ -50,7 +53,9 @@ def fetch_state(url, get=_default_get):
 
 
 def _norm(s):
-    return re.sub(r"[^a-z0-9]", "", (s or "").lower().replace("&", "and"))
+    import unicodedata                               # "L'Oréal" -> "loreal"
+    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]", "", s.lower().replace("&", "and"))
 
 
 def find_brand_path(brand, get=_default_get):

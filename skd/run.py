@@ -16,10 +16,10 @@ from datetime import datetime
 from pathlib import Path
 
 from . import db, deals, posts, telegram
-from .sources import keepa, maccaron, manual, nykaa, purplle
+from .sources import flipkart, keepa, maccaron, manual, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
-FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 13}   # older "current" prices are ignored
+FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8}   # older "current" prices are ignored
 
 
 def load_config(path):
@@ -131,7 +131,7 @@ def ingest_maccaron(conn, products, now, log, delay=2.0, force=False, every_hour
     log(f"maccaron: priced {priced}/{len(watched)} watched products ({gone} pages gone)")
 
 
-NYKAA_EVERY_HOURS = 12      # ~180 pages at 1 req / 3 s = ~9 min, so twice a day fits the Actions budget
+NYKAA_EVERY_HOURS = 24      # ~180 pages, ~15 min on a GitHub runner: once a day fits the Actions budget
 
 
 def ingest_nykaa(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, force=False,
@@ -176,10 +176,79 @@ def ingest_nykaa(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, f
     log(f"nykaa: priced {seen}/{len(watched)} watched products from {pages}/{len(paths)} brand pages")
 
 
+FLIPKART_EVERY_HOURS = 24   # ~225 search pages, ~15 min
+
+
+def _gated(conn, source, now, every_hours, force, log):
+    last = conn.execute("SELECT MAX(ts) FROM price_checks WHERE source=?", (source,)).fetchone()[0]
+    if not force and last and now - last < (every_hours - 0.5) * 3600:
+        log(f"{source}: skipped (last fetched {(now - last) / 3600:.1f}h ago)")
+        return True
+    return False
+
+
+def _ingest_by_brand(conn, products, store, prefix, id_key, jobs, fetch, now, log, delay):
+    """Shared loop for the Scrapling stores: one fetch per job (brand), stop at the first refusal."""
+    watched = {p.product_id for p in products if p.store == store}
+    seen = done = 0
+    for i, job in enumerate(jobs):
+        if i and delay:
+            time.sleep(max(delay, nykaa.MIN_DELAY))
+        try:
+            items = fetch(job)
+        except nykaa.Blocked as e:
+            log(f"{store}: STOP — {e}; keeping what was fetched so far")
+            break
+        except Exception as e:
+            log(f"{store}: {job} failed ({e})")
+            continue
+        done += 1
+        for it in items:
+            pid = f"{prefix}-{it[id_key]}"
+            if pid in watched:
+                ok = it["in_stock"] and it["price"] is not None
+                db.record_price(conn, pid, now, it["price"] if ok else None, ok, store)
+                seen += 1
+        conn.commit()
+    log(f"{store}: priced {seen}/{len(watched)} watched products from {done}/{len(jobs)} brands")
+
+
+def _brand_column(brands_file, wanted, column):
+    out = []
+    if Path(brands_file).exists():
+        with open(brands_file, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r["brand"] in wanted:
+                    out += [s for s in (r.get(column) or "").split("|") if s and s != "-"]
+    return out
+
+
+def ingest_flipkart(conn, products, now, log, delay=nykaa.MIN_DELAY, force=False,
+                    every_hours=FLIPKART_EVERY_HOURS):
+    brands = sorted({p.brand for p in products if p.store == "flipkart"})
+    if not brands:
+        log("flipkart: skipped (no flipkart products in watchlist)")
+        return
+    if _gated(conn, "flipkart", now, every_hours, force, log):
+        return
+    _ingest_by_brand(conn, products, "flipkart", "fk", "flipkart_id", brands,
+                     lambda b: flipkart.fetch_brand(b, delay=delay, log=lambda m: None), now, log, delay)
+
+
+def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY):
+    wanted = {p.brand for p in products if p.store == "tira"}
+    if not wanted:
+        log("tira: skipped (no tira products in watchlist)")
+        return
+    slugs = _brand_column(brands_file, wanted, "tira_slug")
+    _ingest_by_brand(conn, products, "tira", "tira", "tira_id", slugs,
+                     lambda s: tira.fetch_brand(s, log=lambda m: None), now, log, delay)
+
+
 def latest_check(conn, product_id, now):
     row = conn.execute(
         "SELECT ts, price, in_stock, source FROM price_checks WHERE product_id=? "
-        "AND source IN ('keepa','manual','purplle','maccaron','nykaa') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
+        "AND source IN ('keepa','manual','purplle','maccaron','nykaa','flipkart','tira') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
     if not row or now - row[0] > FRESH_HOURS[row[3]] * 3600:
         return None
     return row
@@ -228,6 +297,10 @@ def main(argv=None):
     ap.add_argument("--nykaa-delay", type=float, default=nykaa.MIN_DELAY, help=argparse.SUPPRESS)
     ap.add_argument("--nykaa-every", type=float, default=NYKAA_EVERY_HOURS,
                     help="refetch Nykaa at most every N hours (default %(default)s)")
+    ap.add_argument("--no-flipkart", action="store_true", help="skip the Flipkart price fetch")
+    ap.add_argument("--flipkart-every", type=float, default=FLIPKART_EVERY_HOURS,
+                    help="refetch Flipkart at most every N hours (default %(default)s)")
+    ap.add_argument("--no-tira", action="store_true", help="skip the Tira price fetch")
     ap.add_argument("--now", type=int, help=argparse.SUPPRESS)  # for tests
     a = ap.parse_args(argv)
     log = lambda m: print(m, file=sys.stderr)
@@ -251,6 +324,10 @@ def main(argv=None):
         ingest_maccaron(conn, products, now, log, a.maccaron_delay, every_hours=a.maccaron_every)
     if not a.no_nykaa:
         ingest_nykaa(conn, products, a.brands_file, now, log, a.nykaa_delay, every_hours=a.nykaa_every)
+    if not a.no_flipkart:
+        ingest_flipkart(conn, products, now, log, a.nykaa_delay, every_hours=a.flipkart_every)
+    if not a.no_tira:
+        ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay)
 
     can_telegram = cfg.get("telegram_token") and cfg.get("telegram_chat_id")
     wa_lines, posted = [], 0

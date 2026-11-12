@@ -63,7 +63,7 @@ class NykaaIngest(unittest.TestCase):
         m, _, err = self.run_pipeline(fetch, now=NOW + 3 * 3600)
         m.assert_not_called()
         self.assertIn("nykaa: skipped (last fetched 3.0h ago)", err)
-        m, _, _ = self.run_pipeline(fetch, now=NOW + 12 * 3600)
+        m, _, _ = self.run_pipeline(fetch, now=NOW + run.NYKAA_EVERY_HOURS * 3600)
         self.assertTrue(m.called)
 
     def test_block_keeps_earlier_prices_and_run_finishes(self):

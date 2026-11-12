@@ -1,41 +1,41 @@
-tier,brand,purplle_slugs,maccaron_prefixes,nykaa_paths
-2,Minimalist,minimalist,minimalist,brands/minimalist/c/16420
-2,The Derma Co,the-derma-co,,brands/the-derma-co/c/16118
-2,Dot & Key,dot-and-key,,brands/dot-key/c/7675
-2,Biotique,biotique,,brands/biotique/c/923
-2,Plum,plum,plum,brands/plum/c/2131
-2,Pilgrim,pilgrim,pilgrim,brands/pilgrim/c/13227
-2,Cetaphil,cetaphil,cetaphil,brands/cetaphil/c/1938
-2,Patanjali,,,-
-2,Neutrogena,neutrogena,neutrogena,brands/neutrogena/c/649
-2,Forest Essentials,,,luxe/brands/forest-essentials/c/2682
-3,L'Oreal Paris,loreal,,brands/loreal-paris/c/595
-3,Simple,simple,,brands/simple/c/8649
-3,Dove,dove|dove-international,,brands/dove/c/609
-3,Parachute Advansed,parachute,,-
-3,Vicco,,,-
-3,Boroline,,,-
-3,Foxtale,foxtale,foxtale,brands/foxtale/c/27361
-3,CeraVe,,,brands/cerave/c/55160
-3,Aqualogica,aqualogica,,brands/aqualogica/c/21493
-3,mCaffeine,mcaffeine,,brands/mcaffeine/c/4638
-3,WOW Skin Science,wow,wow,-
-3,Kama Ayurveda,,,luxe/brands/kama-ayurveda/c/2421
-3,Re'equil,re-equil,,brands/re-equil/c/10101
-3,Deconstruct,deconstruct,,brands/deconstruct/c/21754
-3,Joy,joy,,brands/joy/c/4833
-4,The Body Shop,,,brands/the-body-shop/c/943
-4,Clinique,clinique,,luxe/brands/clinique/c/3814
-4,Kiehl's,,,luxe/brands/kiehl-s/c/2371
-4,La Roche-Posay,,la-roche-posay,brands/la-roche-posay/c/2059
-4,Bioderma,bioderma,bioderma,brands/bioderma/c/980
-4,Sebamed,sebamed,,brands/sebamed/c/725
-5,Conscious Chemist,conscious-chemist,,brands/conscious-chemist/c/10733
-5,Dr. Sheth's,dr-sheth-s,,brands/dr-sheth-s/c/6123
-5,Earth Rhythm,,,brands/earth-rhythm/c/11484
-5,Khadi Natural,khadi-natural,,brands/khadi-natural/c/621
-5,Fixderma,fixderma|fixderma-cosmetic-laboratories,,brands/fixderma/c/23725
-5,La Shield,la-shield,,brands/la-shield/c/8835
-5,Just Herbs,just-herbs,,brands/just-herbs/c/990
-5,Bella Vita Organic,bella-vita-organic,,brands/bella-vita-organic/c/7469
-5,Juicy Chemistry,juicy-chemistry,,brands/juicy-chemistry/c/4153
+tier,brand,purplle_slugs,maccaron_prefixes,nykaa_paths,tira_slug
+2,Minimalist,minimalist,minimalist,brands/minimalist/c/16420,minimalist
+2,The Derma Co,the-derma-co,,brands/the-derma-co/c/16118,the-derma-co
+2,Dot & Key,dot-and-key,,brands/dot-key/c/7675,-
+2,Biotique,biotique,,brands/biotique/c/923,-
+2,Plum,plum,plum,brands/plum/c/2131,plum
+2,Pilgrim,pilgrim,pilgrim,brands/pilgrim/c/13227,pilgrim
+2,Cetaphil,cetaphil,cetaphil,brands/cetaphil/c/1938,cetaphil
+2,Patanjali,,,-,-
+2,Neutrogena,neutrogena,neutrogena,brands/neutrogena/c/649,neutrogena
+2,Forest Essentials,,,luxe/brands/forest-essentials/c/2682,forest-essentials
+3,L'Oreal Paris,loreal,,brands/loreal-paris/c/595,l-oreal-paris
+3,Simple,simple,,brands/simple/c/8649,simple
+3,Dove,dove|dove-international,,brands/dove/c/609,dove
+3,Parachute Advansed,parachute,,-,-
+3,Vicco,,,-,-
+3,Boroline,,,-,-
+3,Foxtale,foxtale,foxtale,brands/foxtale/c/27361,foxtale
+3,CeraVe,,,brands/cerave/c/55160,cerave
+3,Aqualogica,aqualogica,,brands/aqualogica/c/21493,aqualogica
+3,mCaffeine,mcaffeine,,brands/mcaffeine/c/4638,mcaffeine
+3,WOW Skin Science,wow,wow,-,wow-skin-science
+3,Kama Ayurveda,,,luxe/brands/kama-ayurveda/c/2421,kama-ayurveda
+3,Re'equil,re-equil,,brands/re-equil/c/10101,re-equil
+3,Deconstruct,deconstruct,,brands/deconstruct/c/21754,deconstruct
+3,Joy,joy,,brands/joy/c/4833,-
+4,The Body Shop,,,brands/the-body-shop/c/943,the-body-shop
+4,Clinique,clinique,,luxe/brands/clinique/c/3814,clinique
+4,Kiehl's,,,luxe/brands/kiehl-s/c/2371,-
+4,La Roche-Posay,,la-roche-posay,brands/la-roche-posay/c/2059,la-roche-posay
+4,Bioderma,bioderma,bioderma,brands/bioderma/c/980,bioderma
+4,Sebamed,sebamed,,brands/sebamed/c/725,sebamed
+5,Conscious Chemist,conscious-chemist,,brands/conscious-chemist/c/10733,conscious-chemist
+5,Dr. Sheth's,dr-sheth-s,,brands/dr-sheth-s/c/6123,-
+5,Earth Rhythm,,,brands/earth-rhythm/c/11484,-
+5,Khadi Natural,khadi-natural,,brands/khadi-natural/c/621,-
+5,Fixderma,fixderma|fixderma-cosmetic-laboratories,,brands/fixderma/c/23725,fixderma
+5,La Shield,la-shield,,brands/la-shield/c/8835,la-shield
+5,Just Herbs,just-herbs,,brands/just-herbs/c/990,just-herbs
+5,Bella Vita Organic,bella-vita-organic,,brands/bella-vita-organic/c/7469,-
+5,Juicy Chemistry,juicy-chemistry,,brands/juicy-chemistry/c/4153,-
