@@ -81,6 +81,9 @@ def fetch(watchlist, out_path, limit=None, delay=nykaa.MIN_DELAY, get=nykaa._def
             except nykaa.Blocked as ex:
                 log(f"nykaa sizes: stopped at {i}/{len(jobs)}: {ex}")
                 break
+            except Exception as ex:     # connection reset, timeout...: also a refusal. No retry.
+                log(f"nykaa sizes: stopped at {i}/{len(jobs)}: {type(ex).__name__}: {str(ex)[:120]}")
+                break
             size, mrp, price, variants = page_size(state)
             w.writerow({"nykaa_id": pid[4:], "size": size, "mrp": mrp, "price": price,
                         "variants": json.dumps(variants), "fetched": int(time.time())})
