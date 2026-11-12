@@ -19,7 +19,7 @@ from . import db, deals, posts, telegram
 from .sources import flipkart, keepa, maccaron, manual, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
-FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8}   # older "current" prices are ignored
+FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8, "tira-page": 26}   # older "current" prices are ignored
 
 
 def load_config(path):
@@ -191,6 +191,7 @@ def _ingest_by_brand(conn, products, store, prefix, id_key, jobs, fetch, now, lo
     """Shared loop for the Scrapling stores: one fetch per job (brand), stop at the first refusal."""
     watched = {p.product_id for p in products if p.store == store}
     seen = done = 0
+    blocked = False
     for i, job in enumerate(jobs):
         if i and delay:
             time.sleep(max(delay, nykaa.MIN_DELAY))
@@ -198,6 +199,7 @@ def _ingest_by_brand(conn, products, store, prefix, id_key, jobs, fetch, now, lo
             items = fetch(job)
         except nykaa.Blocked as e:
             log(f"{store}: STOP — {e}; keeping what was fetched so far")
+            blocked = True
             break
         except Exception as e:
             log(f"{store}: {job} failed ({e})")
@@ -211,6 +213,7 @@ def _ingest_by_brand(conn, products, store, prefix, id_key, jobs, fetch, now, lo
                 seen += 1
         conn.commit()
     log(f"{store}: priced {seen}/{len(watched)} watched products from {done}/{len(jobs)} brands")
+    return blocked
 
 
 def _brand_column(brands_file, wanted, column):
@@ -235,20 +238,61 @@ def ingest_flipkart(conn, products, now, log, delay=nykaa.MIN_DELAY, force=False
                      lambda b: flipkart.fetch_brand(b, delay=delay, log=lambda m: None), now, log, delay)
 
 
-def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY):
-    wanted = {p.brand for p in products if p.store == "tira"}
-    if not wanted:
+TIRA_PAGES = 150   # product pages per run (~9 min at 1 / 3 s); see ingest_tira
+
+
+def ingest_tira(conn, products, brands_file, now, log, delay=nykaa.MIN_DELAY, max_pages=TIRA_PAGES):
+    """Brand pages (top 12 per brand) every run, then up to max_pages product pages for the
+    watched Tira products whose last price is oldest, so the whole Tira list is refreshed in
+    rotation. A refusal anywhere stops Tira for this run."""
+    watched = [p for p in products if p.store == "tira"]
+    if not watched:
         log("tira: skipped (no tira products in watchlist)")
         return
-    slugs = _brand_column(brands_file, wanted, "tira_slug")
-    _ingest_by_brand(conn, products, "tira", "tira", "tira_id", slugs,
-                     lambda s: tira.fetch_brand(s, log=lambda m: None), now, log, delay)
+    slugs = _brand_column(brands_file, {p.brand for p in watched}, "tira_slug")
+    if _ingest_by_brand(conn, products, "tira", "tira", "tira_id", slugs,
+                        lambda s: tira.fetch_brand(s, log=lambda m: None), now, log, delay):
+        return
+    if max_pages > 0:
+        ingest_tira_pages(conn, watched, now, log, delay, max_pages)
+
+
+def ingest_tira_pages(conn, watched, now, log, delay, max_pages):
+    last = dict(conn.execute("SELECT product_id, MAX(ts) FROM price_checks "
+                             "WHERE source IN ('tira','tira-page') GROUP BY product_id").fetchall())
+    due = sorted((p for p in watched if p.url and last.get(p.product_id, 0) < now),
+                 key=lambda p: last.get(p.product_id, 0))[:max_pages]
+    priced = gone = 0
+    for p in due:
+        time.sleep(max(delay, nykaa.MIN_DELAY))     # also after the last brand page
+        try:
+            it = tira.fetch_product(p.url)
+        except tira.NotFound:
+            db.record_price(conn, p.product_id, now, None, False, "tira-page")   # delisted
+            gone += 1
+            continue
+        except nykaa.Blocked as e:
+            log(f"tira-page: STOP — {e}; keeping what was fetched so far")
+            break
+        except Exception as e:
+            log(f"tira-page: {p.url} failed ({e})")
+            continue
+        ok = it["in_stock"] and it["price"] is not None
+        db.record_price(conn, p.product_id, now, it["price"] if ok else None, ok, "tira-page")
+        priced += 1
+        if priced % 25 == 0:
+            conn.commit()
+    conn.commit()
+    oldest = min((last.get(p.product_id, 0) for p in watched), default=0)
+    age = f"{(now - oldest) / 86400:.1f} days" if oldest else "never priced"
+    log(f"tira-page: priced {priced}, {gone} gone, of {len(due)} due ({len(watched)} watched; "
+        f"oldest price before this run: {age})")
 
 
 def latest_check(conn, product_id, now):
     row = conn.execute(
         "SELECT ts, price, in_stock, source FROM price_checks WHERE product_id=? "
-        "AND source IN ('keepa','manual','purplle','maccaron','nykaa','flipkart','tira') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
+        "AND source IN ('keepa','manual','purplle','maccaron','nykaa','flipkart','tira','tira-page') ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
     if not row or now - row[0] > FRESH_HOURS[row[3]] * 3600:
         return None
     return row
@@ -301,6 +345,8 @@ def main(argv=None):
     ap.add_argument("--flipkart-every", type=float, default=FLIPKART_EVERY_HOURS,
                     help="refetch Flipkart at most every N hours (default %(default)s)")
     ap.add_argument("--no-tira", action="store_true", help="skip the Tira price fetch")
+    ap.add_argument("--tira-pages", type=int, default=TIRA_PAGES,
+                    help="Tira product pages per run, stalest first (default %(default)s; 0 = brand pages only)")
     ap.add_argument("--now", type=int, help=argparse.SUPPRESS)  # for tests
     a = ap.parse_args(argv)
     log = lambda m: print(m, file=sys.stderr)
@@ -327,7 +373,7 @@ def main(argv=None):
     if not a.no_flipkart:
         ingest_flipkart(conn, products, now, log, a.nykaa_delay, every_hours=a.flipkart_every)
     if not a.no_tira:
-        ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay)
+        ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay, a.tira_pages)
 
     can_telegram = cfg.get("telegram_token") and cfg.get("telegram_chat_id")
     wa_lines, posted = [], 0

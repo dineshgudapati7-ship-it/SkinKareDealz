@@ -33,6 +33,15 @@ def tira_page(items, total=204):
     return 200, "u", f"<script>window.APP_DATA = {json.dumps(state)}</script>"
 
 
+def tira_product(uid, name="Minimalist Serum", brand="minimalist", brand_name="Minimalist", sellable=True):
+    details = {"uid": uid, "name": name, "slug": f"p-{uid}",
+               "grouped_attributes": [{"details": [{"key": "Net Weight", "value": "30 ml"}]}],
+               "brand": {"name": brand_name, "action": {"page": {"query": {"brand": [brand]}}}}}
+    meta = {"sellable": sellable, "price": {"effective": {"min": 569}, "marked": {"min": 599}}}
+    state = {"reduxData": {"catalog": {"product_details": details, "product_meta": meta}}}
+    return f"<script>window.APP_DATA = {json.dumps(state)}</script>"
+
+
 class FlipkartParse(unittest.TestCase):
     def test_brand_filter_and_both_price_shapes(self):
         _, _, html = fk_page([fk("A", "Minimalist Serum", "Minimalist"), fk("B", "Plum Serum", "Plum"),
@@ -79,6 +88,58 @@ class TiraParse(unittest.TestCase):
             tira.parse_brand_page("<html>no data</html>")
 
 
+class TiraProducts(unittest.TestCase):
+    def test_product_page(self):
+        it = tira.parse_product_page(tira_product(9))
+        self.assertEqual(it, {"tira_id": "9", "name": "Minimalist Serum", "size": "30 ml",
+                              "url": "https://www.tirabeauty.com/product/p-9", "mrp": 599.0, "price": 569.0,
+                              "in_stock": True, "brand_slug": "minimalist", "brand_name": "Minimalist"})
+        empty = '<script>window.APP_DATA = {"reduxData": {"catalog": {"product_details": {}}}}</script>'
+        with self.assertRaises(tira.NotFound):          # rendered, but no product: delisted
+            tira.parse_product_page(empty)
+        with self.assertRaises(nykaa.Blocked):          # no state at all: challenge page
+            tira.parse_product_page("<html>no data</html>")
+
+    def test_sitemaps(self):
+        B = "https://www.tirabeauty.com"
+        pages = {f"{B}/sitemap.xml": f"<loc>{B}/sitemap/products/1/page.sitemap.xml</loc>"
+                                     f"<loc>{B}/sitemap/products/2/page.sitemap.xml</loc><loc>{B}/sitemap/x.xml</loc>",
+                 f"{B}/sitemap/products/1/page.sitemap.xml": f"<loc>{B}/product/plum-a-1</loc><loc>{B}/product/simple-b-2</loc>",
+                 f"{B}/sitemap/products/2/page.sitemap.xml": f"<loc>{B}/product/plum-a-1</loc><loc>{B}/product/plumeria-c</loc>"}
+        sleeps = []
+        urls = tira.product_sitemap_urls(get=lambda u: (200, u, pages[u]), delay=0, sleep=sleeps.append,
+                                         log=lambda m: None)
+        self.assertEqual(urls, [f"{B}/product/plum-a-1", f"{B}/product/simple-b-2", f"{B}/product/plumeria-c"])
+        self.assertEqual(sleeps, [nykaa.MIN_DELAY, nykaa.MIN_DELAY])   # never faster than MIN_DELAY
+        self.assertEqual(tira.urls_for_brand(urls, ["plum"]), [f"{B}/product/plum-a-1"])
+        self.assertEqual(tira.urls_for_brand(urls, ["", None]), [])
+
+    def test_build_tira_sitemap_products(self):
+        from skd import catalog
+        B = "https://www.tirabeauty.com/product/"
+        with tempfile.TemporaryDirectory() as d:
+            bf = Path(d) / "brands.csv"
+            bf.write_text("tier,brand,tira_slug\n2,Simple,simple\n2,Dr. Sheth's,-\n", encoding="utf-8")
+            wl = Path(d) / "watchlist.csv"
+            wl.write_text(f"product_id,store,url\ntira-5,tira,{B}simple-known-5\n", encoding="utf-8")
+            urls = [B + "simple-known-5", B + "simple-face-wash-6", B + "simple-joys-toy-7", B + "dr-sheths-gel-8"]
+            pages = {B + "simple-face-wash-6": tira.parse_product_page(tira_product(6, "Simple Face Wash", "simple", "Simple")),
+                     B + "simple-joys-toy-7": tira.parse_product_page(tira_product(7, "Toy", "simple-joys", "Simple Joys")),
+                     B + "dr-sheths-gel-8": tira.parse_product_page(tira_product(8, "Gel", "dr-sheth-s", "Dr. Sheth's"))}
+            brand_rows = [{"tira_id": "6", "name": "Simple Face Wash", "size": "", "url": B + "simple-face-wash-6",
+                           "mrp": 1, "price": 1, "in_stock": True}]
+            got = []
+            with mock.patch.object(tira, "fetch_brand", return_value=brand_rows), \
+                    mock.patch.object(tira, "product_sitemap_urls", return_value=urls), \
+                    mock.patch.object(tira, "fetch_product", side_effect=lambda u: got.append(u) or pages[u]), \
+                    mock.patch.object(catalog.time, "sleep"):
+                snap, watch, _, missing = catalog.build_tira(catalog.read_brands(bf, {"2"}), 0, lambda m: None, bf, wl)
+            self.assertNotIn(B + "simple-known-5", got)                 # already watched: not refetched
+            self.assertEqual([w["product_id"] for w in watch], ["tira-6", "tira-8"])   # 6 once; 7 is another brand
+            self.assertEqual(watch[1]["brand"], "Dr. Sheth's")           # no brand page, found by name
+            self.assertEqual(missing, [])
+
+
 class TiraResolve(unittest.TestCase):
     def test_guess_404_and_brand_check(self):
         self.assertEqual(tira.guess_slugs("Dot & Key"), ["dot-and-key", "dot-key"])
@@ -123,14 +184,16 @@ class Ingest(unittest.TestCase):
         (self.tmp / "brands.csv").write_text(
             "tier,brand,tira_slug\n2,Minimalist,minimalist\n2,Plum,plum\n", encoding="utf-8")
 
-    def run_pipeline(self, fk_fetch, tira_fetch, now=NOW):
+    def run_pipeline(self, fk_fetch, tira_fetch, now=NOW, product_fetch=None, extra=()):
         args = ["--config", str(self.tmp / "none.toml"), "--db", str(self.tmp / "p.db"),
                 "--watchlist", str(self.tmp / "watchlist.csv"), "--manual", str(self.tmp / "m.csv"),
                 "--outbox", str(self.tmp / "outbox"), "--brands-file", str(self.tmp / "brands.csv"),
-                "--now", str(now), "--dry-run", "--no-purplle", "--no-maccaron", "--no-nykaa"]
+                "--now", str(now), "--dry-run", "--no-purplle", "--no-maccaron", "--no-nykaa", *extra]
+        self.product = mock.Mock(side_effect=product_fetch or (lambda u: {"in_stock": True, "price": 500.0}))
         err = io.StringIO()
         with mock.patch.object(flipkart, "fetch_brand", side_effect=fk_fetch) as f, \
                 mock.patch.object(tira, "fetch_brand", side_effect=tira_fetch) as t, \
+                mock.patch.object(tira, "fetch_product", self.product), \
                 mock.patch.object(run.time, "sleep"), \
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
             run.main(args)
@@ -155,6 +218,47 @@ class Ingest(unittest.TestCase):
         f, t, err = self.run_pipeline(lambda b, **kw: [fk_item], tira_fetch, now=NOW + 3600)
         f.assert_not_called()                       # flipkart gated to every 12 h
         self.assertTrue(t.called)                   # tira runs every time
+
+    def test_brand_page_refusal_skips_product_pages(self):
+        def brand(slug, **kw):
+            raise nykaa.Blocked("tira returned 403")
+        self.run_pipeline(lambda b, **kw: [], brand)
+        self.product.assert_not_called()
+
+    def test_product_page_rotation(self):
+        wl = self.tmp / "watchlist.csv"
+        wl.write_text(wl.read_text(encoding="utf-8") + "tira-9,S,Plum,,tira,,u9,,,\ntira-10,S,Plum,,tira,,u10,,,\n",
+                      encoding="utf-8")
+        conn = db.connect(self.tmp / "p.db")
+        db.record_price(conn, "tira-9", NOW - 50 * 3600, 400.0, True, "tira-page")     # tira-8: never priced
+        db.record_price(conn, "tira-10", NOW - 90 * 3600, 400.0, True, "tira-page")
+        conn.commit()
+        conn.close()
+
+        def brand(slug, **kw):
+            return [{"tira_id": "7", "in_stock": True, "price": 569.0}]
+
+        def page(url):
+            if url == "u10":
+                raise tira.NotFound(url)
+            return {"in_stock": True, "price": 450.0}
+        _, _, err = self.run_pipeline(lambda b, **kw: [], brand, product_fetch=page, extra=["--tira-pages", "2"])
+        # tira-7 was just priced by its brand page; then the stalest two: tira-8 (never), tira-10 (90 h)
+        self.assertEqual([c.args[0] for c in self.product.call_args_list], ["u", "u10"])
+        self.assertIn("tira-page: priced 1, 1 gone, of 2 due", err)
+        conn = db.connect(self.tmp / "p.db")
+        rows = conn.execute("SELECT product_id, price, in_stock FROM price_checks WHERE source='tira-page' "
+                            "AND ts=? ORDER BY product_id", (NOW,)).fetchall()
+        self.assertEqual(rows, [("tira-10", None, 0), ("tira-8", 450.0, 1)])
+        self.assertIsNotNone(run.latest_check(conn, "tira-8", NOW + 20 * 3600))   # fresh for a day
+        conn.close()
+
+    def test_product_page_refusal_stops(self):
+        def page(url):
+            raise nykaa.Blocked("tira returned 403")
+        _, _, err = self.run_pipeline(lambda b, **kw: [], lambda slug, **kw: [], product_fetch=page)
+        self.assertEqual(self.product.call_count, 1)
+        self.assertIn("tira-page: STOP", err)
 
 
 if __name__ == "__main__":

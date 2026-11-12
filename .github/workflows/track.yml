@@ -4,7 +4,8 @@
 # force-pushed after each run, so git history doesn't grow by ~1.5 MB per run.
 #
 # Budget (private repo = 2,000 free minutes/month), measured on runners 2026-11-12:
-#   Purplle ~6 min + Tira ~3 min every run; Nykaa ~15 min and Flipkart ~15 min at most once per 24 h
+#   Purplle ~6 min + Tira ~3 min brand pages + ~2.5 min for 40 Tira product pages every run;
+#   Nykaa ~15 min and Flipkart ~15 min at most once per 24 h
 #   (skd.run gates them). GitHub has been starting this only every ~7-9 h (~3 runs/day) -> ~1,700 min/month.
 #   If it ever runs the full 8/day, that becomes ~2,800: raise --nykaa-every/--flipkart-every or cut the cron.
 # Nykaa, Flipkart and Tira are fetched with Scrapling (Chrome TLS) by the owner's choice:
@@ -60,7 +61,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
           KEEPA_KEY: ${{ secrets.KEEPA_KEY }}
         # --dry-run: nothing is posted. Remove it here when you want auto-posting.
-        run: python -m skd.run --dry-run --no-maccaron 2>&1 | tee run.log
+        # --tira-pages 40: the private-repo budget only allows a slow Tira rotation (~120 pages/day at
+        # ~3 runs/day, so ~3 weeks per full pass). Raise it if the repo goes public or Tira moves elsewhere.
+        run: python -m skd.run --dry-run --no-maccaron --tira-pages 40 2>&1 | tee run.log
 
       - name: Summary
         if: always()

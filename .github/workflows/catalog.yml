@@ -1,0 +1,70 @@
+# Build the watchlist catalogue on GitHub Actions, on demand (Actions tab -> "catalog build" -> Run workflow).
+#
+# Mainly for Tira: the first full sitemap + product-page pass is ~2,700 pages at 1 request / 3 s,
+# about 3 h, too long for the PC to babysit. Later passes only open new products (minutes).
+# Same rules as everywhere else: Scrapling, >= 3 s between requests, a single attempt per request,
+# full stop at the first refusal; nothing gets around a block.
+# The results (watchlist.csv, brands.csv, data/catalog/<store>_<date>.csv) are committed to main.
+name: catalog build
+
+on:
+  workflow_dispatch:
+    inputs:
+      stores:
+        description: "Stores to build, comma-separated (tira, flipkart, nykaa, purplle)"
+        default: "tira"
+      brands:
+        description: "Only these brands, comma-separated (empty = all tier 2-5 brands)"
+        default: ""
+
+concurrency:
+  group: catalog-build
+  cancel-in-progress: false
+
+permissions:
+  contents: write                 # commit the catalogue to main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330          # under GitHub's 6 h job limit
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Scrapling
+        run: pip install -q "scrapling[fetchers]==0.5.1"
+
+      - name: Build catalogue
+        env:                      # inputs go through env, never straight into the script
+          STORES: ${{ inputs.stores }}
+          BRANDS: ${{ inputs.brands }}
+        run: |
+          set -o pipefail
+          args=(--stores "$STORES")
+          if [ -n "$BRANDS" ]; then args+=(--brands "$BRANDS"); fi
+          python -m skd.catalog "${args[@]}" 2>&1 | tee catalog.log
+
+      - name: Summary
+        if: always()
+        run: |
+          [ -f catalog.log ] || exit 0
+          grep -vE '^\s+tira [a-z0-9-]+: top ' catalog.log > summary.txt || true
+          { echo '```'; tail -60 summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the catalogue to main
+        # Also after a failure: the catalogue writes its files only once a store finishes (or stops at
+        # a refusal), so whatever is on disk is complete for the stores that got that far.
+        if: always()
+        run: |
+          git add data/watchlist.csv data/brands.csv data/catalog/
+          if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -qm "Catalogue build ($STORES) run ${{ github.run_number }}"
+          git pull -q --rebase origin main
+          git push -q origin HEAD:main
+        env:
+          STORES: ${{ inputs.stores }}

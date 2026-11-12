@@ -55,8 +55,6 @@ Every `python -m skd.run` also fetches the Purplle brand pages for the brands in
 
 The pipeline fetches each watched Maccaron page at most once every 6 hours, about 15 minutes per pass. Skip it with `--no-maccaron`.
 
-Tira answers scripted requests with 403 (bot protection), so it is deliberately not fetched.
-
 ## Nykaa
 Nykaa's bot protection (Akamai) blocks plain scripts, robots.txt included. On 2026-11-11 the owner chose to fetch it anyway with [Scrapling](https://github.com/D4Vinci/Scrapling), whose `Fetcher` presents a real Chrome TLS fingerprint. The conditions are **slow and steady**: at most 1 request every 3 s (`nykaa.MIN_DELAY`, never lower), a full stop at the first refusal, and no proxies or retries to get around a block. Doing this can put Nykaa's own affiliate program (NAP) at risk.
 
@@ -75,7 +73,10 @@ On 2026-11-12 the owner extended the same Scrapling method to these two stores, 
 python -m skd.catalog --stores flipkart,tira
 ```
 - **Flipkart** (`fk-<pid>`): searches `/search?q=<brand>&page=N`. robots.txt allows this, but not `sort=` or `facets=`, so neither is used. Only titles that start with the brand name are kept, and a brand stops after 2 pages with no match. That gave 3,202 products from 38 brands. **Many listings come from third-party resellers** (e.g. La Roche-Posay, imported Kiehl's), and some are non-skincare (Patanjali). Check the seller before posting. Tracked by `skd.run` at most every 24 h (`--flipkart-every`, `--no-flipkart`), about 225 pages and roughly 15 minutes.
-- **Tira** (`tira-<uid>`): reads each brand page `/brand/<slug>`, which server-renders only its **top 12 products**. "Load more" uses Tira's app-token API, which we don't use. Slugs come from the brand sitemap (only about 200 brands), or are guessed from the name and accepted only if the page's products are that brand. They are stored in `brands.csv` → `tira_slug` (`-` = not on Tira). It takes about 40 requests, so it runs on every `skd.run` (`--no-tira`). A full Tira catalogue would need one product page per product, about 2 h for our brands, and isn't built.
+- **Tira** (`tira-<uid>`), from two sources:
+  - **Brand pages** `/brand/<slug>` server-render only the **top 12 products** ("Load more" uses Tira's app-token API, which we don't use). Slugs come from the brand sitemap or are guessed from the name and accepted only if the page's products are that brand; they're stored in `brands.csv` → `tira_slug` (`-` = no brand page).
+  - **Product sitemaps** (~65 files, ~27k products) find the rest: URLs that start with a brand's slug are opened one product page each, and the page must confirm the brand. Pages are ~1.4 MB, so the first full catalogue run takes about 2.5 h (~2,700 products for our brands). Later runs skip URLs already in the watchlist. `--no-tira-sitemap` = brand pages only.
+  - **Price tracking:** every `skd.run` reads the brand pages (~40 requests), then up to `--tira-pages` product pages (default 150, about 9 min) for the watched Tira products whose price is oldest, recorded as `source=tira-page` (counts as current for 26 h). So the whole list is refreshed in rotation; a full rotation needs about 2,700 pages, about 2.5 h of fetching. A delisted product is recorded out of stock. Any refusal stops Tira for that run. `--no-tira` skips both.
 
 ## Data sources
 - **Amazon:** the Keepa API. On the first run it backfills about 90 days of price history, so deal detection works from day one.

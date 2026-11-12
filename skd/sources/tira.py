@@ -7,14 +7,23 @@ first refusal. robots.txt allows brand and product pages.
 The brand page /brand/<slug> server-renders only its first 12 products, in popularity order,
 in window.APP_DATA.reduxData.catalog.product_lists.data. Its "Load more" button calls Tira's
 storefront API with an app token, and we deliberately don't use that. So each brand gives
-its top 12 products (page.item_total says how many it has in all). A full catalogue would
-need one product page per product, from the product sitemaps (about 2 h for our brands),
-and is not done here.
+its top 12 products (page.item_total says how many it has in all).
+
+The rest of the catalogue comes from the product sitemaps (/sitemap.xml lists about 65
+files of 500 /product/<slug> URLs each, ~27k products in all, ~2,700 for our brands).
+The slug starts with the brand name, so URLs are picked by brand slug prefix and each
+product page then confirms its brand. A product page carries the same uid as the brand
+page, plus price, MRP, stock and the "Net Weight" attribute, in
+window.APP_DATA.reduxData.catalog.product_details / product_meta. Pages are ~1.4 MB, so
+at 1 request / 3 s a full pass over our brands takes about 2.5 h. The sitemaps don't
+list everything (most brand-page top-12 URLs were missing from them on 2026-11-12), so
+both sources are used together.
 
 Brand slugs come from /sitemap/brand.sitemap.xml.
 """
 import json
 import re
+import time
 
 from .nykaa import Blocked, MIN_DELAY, _default_get, _norm
 
@@ -49,13 +58,17 @@ def slug_for(slugs, brand):
     return slugs.get(_norm(brand)) or slugs.get(_norm(brand.replace("&", "")))
 
 
-def parse_brand_page(html):
-    """(rows, item_total) from a brand page."""
+def _catalog_state(html):
     i = html.find("window.APP_DATA")
     if i < 0:
         raise Blocked("tira page without product data (challenge page?)")
     state, _ = json.JSONDecoder().raw_decode(_UNDEF.sub(r"\1null", html[html.find("{", i):]))
-    data = (((state.get("reduxData") or {}).get("catalog") or {}).get("product_lists") or {}).get("data") or {}
+    return (state.get("reduxData") or {}).get("catalog") or {}
+
+
+def parse_brand_page(html):
+    """(rows, item_total) from a brand page."""
+    data = (_catalog_state(html).get("product_lists") or {}).get("data") or {}
     rows = []
     for it in data.get("items") or []:
         price = it.get("price") or {}
@@ -77,6 +90,61 @@ def fetch_brand(slug, get=_default_get, log=print):
     rows, total = parse_brand_page(fetch_html(f"{BASE}/brand/{slug}", get))
     log(f"  tira {slug}: top {len(rows)} of {total}")
     return rows
+
+
+_LOC = r"<loc>\s*(https://www\.tirabeauty\.com/{}[^<\s]*)\s*</loc>"
+
+
+def product_sitemap_urls(get=_default_get, delay=MIN_DELAY, sleep=time.sleep, log=print):
+    """Every /product/ URL in the product sitemaps, in sitemap order, without duplicates.
+    One request per sitemap (~66 in all), MIN_DELAY apart; a refusal raises Blocked."""
+    index = fetch_html(f"{BASE}/sitemap.xml", get)
+    maps = re.findall(_LOC.format(r"sitemap/products/\d+/page\.sitemap\.xml"), index)
+    urls = []
+    for m in maps:
+        sleep(max(delay, MIN_DELAY))
+        urls += re.findall(_LOC.format("product/"), fetch_html(m, get))
+    urls = list(dict.fromkeys(urls))
+    log(f"  tira sitemaps: {len(urls)} product URLs from {len(maps)} files")
+    return urls
+
+
+def urls_for_brand(urls, slugs):
+    """Sitemap URLs whose product slug starts with one of the brand slugs."""
+    prefixes = tuple(f"{BASE}/product/{s}-" for s in slugs if s)
+    return [u for u in urls if prefixes and u.startswith(prefixes)]
+
+
+def parse_product_page(html):
+    """One product page -> a row like the brand page's, plus brand_slug to check the brand."""
+    cat = _catalog_state(html)
+    d = cat.get("product_details") or {}
+    m = cat.get("product_meta") or {}
+    if not d.get("uid"):              # the page rendered but holds no product: gone, not a refusal
+        raise NotFound("tira product page without a product")
+    price = m.get("price") or {}
+    eff = (price.get("effective") or {}).get("min")
+    mrp = (price.get("marked") or {}).get("min")
+    size = next((a.get("value") for g in d.get("grouped_attributes") or [] for a in g.get("details") or []
+                 if a.get("key") == "Net Weight"), "") or ""
+    brand = d.get("brand") or {}
+    brand_slug = ((((brand.get("action") or {}).get("page") or {}).get("query") or {}).get("brand") or [""])[0]
+    return {
+        "tira_id": str(d["uid"]),
+        "name": (d.get("name") or "").strip(),
+        "size": str(size).strip(),
+        "url": f"{BASE}/product/{d.get('slug')}",
+        "mrp": float(mrp) if mrp is not None else None,
+        "price": float(eff) if eff is not None else None,
+        "in_stock": bool(m.get("sellable")),
+        "brand_slug": brand_slug,
+        "brand_name": (brand.get("name") or "").strip(),
+    }
+
+
+def fetch_product(url, get=_default_get):
+    """Parsed product page; NotFound for a removed product, Blocked for a refusal."""
+    return parse_product_page(fetch_html(url, get))
 
 
 def guess_slugs(brand):
