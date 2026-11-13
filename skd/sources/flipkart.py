@@ -108,3 +108,47 @@ def fetch_brand(brand, delay=MIN_DELAY, max_pages=15, get=_default_get, log=prin
             break
     log(f"  flipkart {brand}: {len(out)} products ({page} pages)")
     return out
+
+
+# ---------- product pages (live checks from the price-check bot) ----------
+# /p/<itm...>?pid=<FSN> is allowed by robots.txt. The page's state JSON has, under
+# multiWidgetState.pageDataResponse.pageContext.fdpEventTracking.events.psi:
+#   fsn (the product id), ppd.finalPrice / ppd.mrp, pls.availabilityStatus, nb.nonBuyable.
+# ppd.nepPrice is a lower new-customer price; we never use it.
+
+def _find_psi(o):
+    if isinstance(o, dict):
+        if "fsn" in o and isinstance(o.get("ppd"), dict):
+            return o
+        for v in o.values():
+            r = _find_psi(v)
+            if r:
+                return r
+    elif isinstance(o, list):
+        for v in o:
+            r = _find_psi(v)
+            if r:
+                return r
+    return None
+
+
+def parse_product_page(state, pid):
+    """{'mrp', 'price', 'in_stock'} for product `pid`; ValueError if the page is for
+    something else or has no price block."""
+    psi = _find_psi(state)
+    if not psi:
+        raise ValueError("flipkart page without a price block")
+    if str(psi.get("fsn", "")).upper() != str(pid).upper():
+        raise ValueError(f"flipkart page is for {psi.get('fsn')}, not {pid}")
+    ppd = psi["ppd"]
+    price = ppd.get("finalPrice") or ppd.get("fsp")
+    pls, nb = psi.get("pls") or {}, psi.get("nb") or {}
+    in_stock = (pls.get("availabilityStatus") == "IN_STOCK" and not nb.get("nonBuyable")
+                and price is not None)
+    return {"mrp": float(ppd["mrp"]) if ppd.get("mrp") else None,
+            "price": float(price) if in_stock else None, "in_stock": in_stock}
+
+
+def fetch_product(url, pid, get=_default_get):
+    """Live offer for one product page. Raises Blocked on a refusal."""
+    return parse_product_page(fetch_state(url, get), pid)

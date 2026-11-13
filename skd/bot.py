@@ -13,6 +13,7 @@ Prices come from prices.db, which the GitHub Actions run rewrites every 3 h on t
 origin/data every --refresh-hours, so it never touches the tracker's DB.
 """
 import argparse
+from dataclasses import dataclass
 import html
 import os
 import re
@@ -144,24 +145,54 @@ def expand_short_link(url, opener=None, hops=4):
 
 # ---------- the price-check engine ----------
 
+@dataclass
+class LiveSource:
+    """How to read one store's product page live."""
+    fetch: object                 # fetch(product) -> {'price', 'mrp', 'in_stock'}
+    refusals: tuple               # exceptions that mean "the store said no"
+    gap: float                    # seconds between requests to this store
+    pause: float                  # after a refusal, leave the store alone this long
+    strict: bool = False          # any other error (reset, timeout) also counts as a refusal
+    gone: tuple = ()              # "this product is no longer sold": shown as out of stock
+    benign: tuple = (ValueError,) # page parsed but not usable (e.g. another product): no pause
+
+
+def default_live_sources(log=print):
+    """Purplle (plain HTTP), plus Flipkart and Tira through Scrapling under the owner's
+    slow-and-steady rules: >= 3 s apart, one attempt, any refusal or connection error
+    pauses that store for 12 h. Nykaa is deliberately not checked live (affiliate risk)."""
+    from .sources import flipkart, nykaa, purplle, tira
+    out = {"purplle": LiveSource(lambda p: purplle.fetch_product(p.product_id),
+                                 (purplle.Blocked,), gap=1.0, pause=3600)}
+    try:
+        import scrapling.fetchers  # noqa: F401
+    except ImportError:
+        log('live: Flipkart/Tira off (pip install "scrapling[fetchers]==0.5.1" to enable)')
+        return out
+    out["flipkart"] = LiveSource(lambda p: flipkart.fetch_product(p.url, p.product_id.removeprefix("fk-")),
+                                 (nykaa.Blocked,), gap=nykaa.MIN_DELAY, pause=12 * 3600, strict=True)
+    out["tira"] = LiveSource(lambda p: tira.fetch_product(p.url),
+                             (nykaa.Blocked,), gap=nykaa.MIN_DELAY, pause=12 * 3600, strict=True,
+                             gone=(tira.NotFound,))
+    return out
+
+
 class LivePrices:
     """Live checkout price for a store page, fetched when someone asks.
 
     The catalogue says which page is the same product; this reads that one page now, so the
-    reply matches the cart. Purplle only for now (its brand listings understate the checkout
-    price). Cached for `ttl` seconds, at most one request per `gap` seconds per store, and a
-    refusal pauses that store for an hour. On any failure the tracked price is used."""
+    reply matches the cart. Results are cached for `ttl` seconds; each store has its own
+    request gap and refusal pause (LiveSource). On any failure the tracked price is used."""
 
-    def __init__(self, fetchers=None, ttl=1800, gap=1.0, clock=time.time, sleep=time.sleep):
-        from .sources import purplle
-        self.fetchers = fetchers if fetchers is not None else {"purplle": (purplle.fetch_product,
-                                                                          (purplle.Blocked,))}
-        self.ttl, self.gap, self.clock, self.sleep = ttl, gap, clock, sleep
+    def __init__(self, sources=None, ttl=1800, clock=time.time, sleep=time.sleep, log=lambda m: None):
+        self.sources = sources if sources is not None else default_live_sources(log)
+        self.ttl, self.clock, self.sleep, self.log = ttl, clock, sleep, log
         self.cache, self.last, self.paused = {}, {}, {}
 
     def get(self, p):
         """(ts, price, in_stock, 'live') or None."""
-        if p.store not in self.fetchers:
+        src = self.sources.get(p.store)
+        if not src or not p.url:
             return None
         now = self.clock()
         hit = self.cache.get(p.product_id)
@@ -169,18 +200,24 @@ class LivePrices:
             return hit
         if self.paused.get(p.store, 0) > now:
             return None
-        fetch, blocked = self.fetchers[p.store]
-        wait = self.last.get(p.store, 0) + self.gap - now
+        wait = self.last.get(p.store, 0) + src.gap - now
         if wait > 0:
             self.sleep(wait)
         self.last[p.store] = self.clock()
         try:
-            it = fetch(p.product_id)
-        except blocked:
-            self.paused[p.store] = self.clock() + 3600
-            return None
-        except Exception:
-            return None
+            it = src.fetch(p)
+        except Exception as ex:
+            if src.gone and isinstance(ex, src.gone):
+                it = {"price": None, "mrp": None, "in_stock": False}
+            elif isinstance(ex, src.benign) and not isinstance(ex, src.refusals):
+                return None
+            elif isinstance(ex, src.refusals) or src.strict:
+                self.paused[p.store] = self.clock() + src.pause
+                self.log(f"live: {p.store} paused {src.pause / 3600:g} h after "
+                         f"{type(ex).__name__}: {str(ex)[:120]}")
+                return None
+            else:
+                return None
         row = (int(self.clock()), it["price"], 1 if it["in_stock"] else 0, "live")
         self.cache[p.product_id] = row
         return row
@@ -492,6 +529,10 @@ class Bot:
                 if len(self.recent[chat_id]) == RATE_LIMIT[0] + 1:
                     self._send(chat_id, "That's a lot at once. Give me a minute 🙂")
                 return
+            try:                         # live checks can take a few seconds
+                self._call("sendChatAction", chat_id=chat_id, action="typing")
+            except Exception:
+                pass
             kind, pid, body, kb = answer(self.cat, conn, msg["text"], self.cfg, now)
             self._send(chat_id, body, kb)
             if kind != "help":
@@ -539,7 +580,7 @@ def main(argv=None):
         refresh_prices(prices, log)
     if not prices.exists():
         sys.exit(f"no price database at {prices}; run once with network access to copy it from origin/data")
-    cat = Catalog(a.watchlist, live=LivePrices())
+    cat = Catalog(a.watchlist, live=LivePrices(log=log))
 
     if a.ask is not None:
         conn = sqlite3.connect(f"file:{prices}?mode=ro", uri=True)

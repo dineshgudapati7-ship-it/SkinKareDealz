@@ -269,3 +269,24 @@ class Ingest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FlipkartProductPage(unittest.TestCase):
+    STATE = {"multiWidgetState": {"pageDataResponse": {"pageContext": {"fdpEventTracking": {"events": {"psi": {
+        "fsn": "FRNFWSHFY7K9HG4S", "ppd": {"fsp": 569, "finalPrice": 569, "mrp": 599, "nepPrice": 430},
+        "pls": {"availabilityStatus": "IN_STOCK"}, "nb": {"nonBuyable": False}}}}}}}}
+
+    def test_price_not_new_customer_price(self):
+        from skd.sources import flipkart
+        self.assertEqual(flipkart.parse_product_page(self.STATE, "frnfwshfy7k9hg4s"),
+                         {"mrp": 599.0, "price": 569.0, "in_stock": True})
+
+    def test_out_of_stock_and_wrong_product(self):
+        import copy
+        from skd.sources import flipkart
+        st = copy.deepcopy(self.STATE)
+        psi = st["multiWidgetState"]["pageDataResponse"]["pageContext"]["fdpEventTracking"]["events"]["psi"]
+        psi["pls"]["availabilityStatus"] = "OUT_OF_STOCK"
+        self.assertEqual(flipkart.parse_product_page(st, "FRNFWSHFY7K9HG4S")["in_stock"], False)
+        with self.assertRaises(ValueError):
+            flipkart.parse_product_page(self.STATE, "OTHERPID")

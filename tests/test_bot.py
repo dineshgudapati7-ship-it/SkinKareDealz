@@ -136,7 +136,7 @@ class Replies(unittest.TestCase):
 
 
 class Live(unittest.TestCase):
-    """Live Purplle check: replaces the tracked price, cached, paused after a refusal."""
+    """Live checks: replace the tracked price, cached, paused after a refusal."""
 
     def setUp(self):
         r = Replies()
@@ -144,41 +144,86 @@ class Live(unittest.TestCase):
         self.r = r
         self.calls = []
         self.t = [NOW]
+        self.mode = {"purplle": "ok", "flipkart": "ok", "tira": "ok"}
 
         class Refused(Exception):
             pass
         self.Refused = Refused
 
-        def fetch(pid):
-            self.calls.append(pid)
-            if self.refuse:
-                raise Refused()
-            return {"price": 549.0, "mrp": 699.0, "in_stock": True}
+        class Gone(LookupError):
+            pass
 
-        self.refuse = False
-        self.live = bot.LivePrices({"purplle": (fetch, (Refused,))}, clock=lambda: self.t[0],
-                                   sleep=lambda s: None)
+        def fetcher(store, price):
+            def fetch(p):
+                self.calls.append(p.product_id)
+                m = self.mode[store]
+                if m == "refuse":
+                    raise Refused()
+                if m == "reset":
+                    raise ConnectionError("stream reset")
+                if m == "gone":
+                    raise Gone()
+                if m == "other":
+                    raise ValueError("page is for another product")
+                return {"price": price, "mrp": 699.0, "in_stock": True}
+            return fetch
+
+        sleeps = self.sleeps = []
+        self.live = bot.LivePrices({
+            "purplle": bot.LiveSource(fetcher("purplle", 549.0), (Refused,), gap=1.0, pause=3600),
+            "flipkart": bot.LiveSource(fetcher("flipkart", 455.0), (Refused,), gap=3.0,
+                                       pause=12 * 3600, strict=True),
+            "tira": bot.LiveSource(fetcher("tira", 520.0), (Refused,), gap=3.0, pause=12 * 3600,
+                                   strict=True, gone=(Gone,)),
+        }, clock=lambda: self.t[0], sleep=sleeps.append)
         r.cat.live = self.live
 
-    def test_live_price_wins_and_is_cached(self):
-        body = bot.compare(self.r.cat, self.r.conn, "pur-288836", CFG, NOW)
-        self.assertIn("Purplle</a> — ₹549", body)          # tracked 491 replaced by live 549
-        self.assertIn("Cheapest: <b>₹499 on Nykaa</b>", body)
-        bot.compare(self.r.cat, self.r.conn, "pur-288836", CFG, NOW)
-        self.assertEqual(self.calls, ["pur-288836"])       # second reply used the cache
+    def reply(self, pid="pur-288836"):
+        return bot.compare(self.r.cat, self.r.conn, pid, CFG, NOW)
+
+    def test_live_prices_win_and_are_cached(self):
+        body = self.reply()
+        self.assertIn("Purplle</a> — ₹549", body)          # tracked 491 replaced
+        self.assertIn("Flipkart</a> — ₹455", body)         # tracked 569 replaced
+        self.assertIn("Tira</a> — ₹520", body)             # tracked "out of stock" replaced
+        self.assertIn("Cheapest: <b>₹455 on Flipkart</b>", body)
+        n = len(self.calls)
+        self.reply()
+        self.assertEqual(len(self.calls), n)               # second reply used the cache
+
+    def test_nykaa_and_amazon_never_fetched(self):
+        self.reply()
+        self.assertFalse([c for c in self.calls if c.startswith(("nyk-", "min-"))])
+
+    def test_scrapling_stores_keep_3s_gap(self):
+        self.reply()
+        self.live.cache.clear()
+        self.reply()                                       # same clock: must wait the gap
+        self.assertIn(3.0, self.sleeps)
 
     def test_refusal_falls_back_and_pauses(self):
-        self.refuse = True
-        body = bot.compare(self.r.cat, self.r.conn, "pur-288836", CFG, NOW)
-        self.assertIn("₹491", body)                        # tracked price
+        self.mode["purplle"] = "refuse"
+        self.assertIn("₹491", self.reply())                # tracked price
         self.t[0] += 60
-        self.r.cat.live.cache.clear()
-        bot.compare(self.r.cat, self.r.conn, "pur-288836", CFG, NOW)
-        self.assertEqual(len(self.calls), 1)               # paused, no second request
+        self.live.cache.clear()
+        before = self.calls.count("pur-288836")
+        self.reply()
+        self.assertEqual(self.calls.count("pur-288836"), before)   # paused
 
-    def test_other_stores_not_fetched(self):
-        bot.compare(self.r.cat, self.r.conn, "fk-FRNFWSHFY7K9HG4S", CFG, NOW)
-        self.assertEqual(self.calls, ["pur-288836"])
+    def test_connection_reset_pauses_strict_store_12h(self):
+        self.mode["flipkart"] = "reset"
+        self.assertIn("Flipkart</a> — ₹569", self.reply())         # tracked price
+        self.assertGreater(self.live.paused["flipkart"], NOW + 11 * 3600)
+
+    def test_delisted_is_out_of_stock_not_a_pause(self):
+        self.mode["tira"] = "gone"
+        self.assertIn("Tira</a> — out of stock", self.reply())
+        self.assertNotIn("tira", self.live.paused)
+
+    def test_wrong_product_page_is_ignored_not_a_pause(self):
+        self.mode["flipkart"] = "other"
+        self.assertIn("Flipkart</a> — ₹569", self.reply())
+        self.assertNotIn("flipkart", self.live.paused)
 
 
 class Loop(unittest.TestCase):
