@@ -35,6 +35,46 @@ class Links(unittest.TestCase):
         self.assertEqual(bot.url_keys("https://www.tirabeauty.com/product/abc-30ml-xyz?src=share"),
                          ["tira:abc-30ml-xyz"])
         self.assertEqual(bot.url_keys("https://evil.example/p/123"), [])
+        self.assertEqual(bot.url_keys("https://www.tirabeauty.com/product/the-ordinary-toner-100-ml-7609355"),
+                         ["tira:the-ordinary-toner-100-ml-7609355", "tira:7609355"])
+
+    def test_slug_words(self):
+        self.assertEqual(bot.slug_words("https://www.tirabeauty.com/product/minimalist-10-niacinamide-face-serum-7532238"),
+                         "minimalist 10% niacinamide face serum")
+        self.assertEqual(bot.slug_words("https://www.tirabeauty.com/product/abc-cleanser-100ml-cgpqtyl2vxu"),
+                         "abc cleanser 100ml")
+        self.assertEqual(bot.slug_words("https://m.purplle.com/product/288836"), "")
+
+    def test_tira_share_link_reads_the_js_redirect(self):
+        page = (b"<script>var custom = 'https://www.tirabeauty.com/product/x-serum-30ml-7524004'\n"
+                b"var ios_package = 'https://apps.apple.com/us/app/id1466063060'</script>")
+
+        class Resp:
+            headers = {}
+
+            def __init__(self, body):
+                self.body = body
+
+            def read(self, n):
+                return self.body[:n]
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        class Opener:
+            seen = []
+
+            def open(self, req, timeout):
+                self.seen.append(req.get_method())
+                return Resp(page if req.get_method() == "GET" else b"")
+
+        o = Opener()
+        self.assertEqual(bot.expand_short_link("https://www.trbt.ly/l/2Zoc2G", opener=o),
+                         "https://www.tirabeauty.com/product/x-serum-30ml-7524004")
+        self.assertEqual(o.seen, ["HEAD", "GET"])
 
     def test_short_link_reads_location_only_and_stays_on_known_hosts(self):
         hops = {"https://dl.flipkart.com/s/abc": "https://www.flipkart.com/x/p/itm1?pid=P1"}

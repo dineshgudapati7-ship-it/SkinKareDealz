@@ -34,7 +34,10 @@ STORE_HOSTS = {"nykaa.com": "nykaa", "flipkart.com": "flipkart", "purplle.com": 
                "tirabeauty.com": "tira", "maccaron.in": "maccaron", "amazon.in": "amazon"}
 # Short/share links we expand (Location header only, one request per hop, no page body).
 SHORT_HOSTS = ("dl.flipkart.com", "fkrt.it", "fkrt.co", "amzn.in", "amzn.to", "a.co",
-               "ekaro.in", "earnkaro.com", "onelink.me", "nykaa.me", "page.link")
+               "ekaro.in", "earnkaro.com", "onelink.me", "nykaa.me", "page.link", "trbt.ly")
+# Shorteners that answer 200 with a JavaScript redirect instead of a Location header
+# (Tira's share links). We read the start of that page, never the store's own page.
+BODY_REDIRECT_HOSTS = ("trbt.ly",)
 EARNKARO_HOSTS = ("ekaro.in", "earnkaro.com")
 URL_RE = re.compile(r"https?://[^\s<>\"']+", re.I)
 RATE_LIMIT = (10, 60)          # at most 10 messages per chat per 60 s
@@ -90,6 +93,7 @@ def url_keys(url):
         m = re.search(r"/product/([^/]+)$", path)
         if m:
             keys.append(f"tira:{m.group(1).lower()}")
+            keys += [f"tira:{d}" for d in re.findall(r"-(\d{5,})$", m.group(1))]
     elif store == "maccaron":
         keys += [f"maccaron:{m}" for m in re.findall(r"/products/[^/]+/(\d+)$", path)]
     return keys
@@ -98,7 +102,7 @@ def url_keys(url):
 def _id_keys(p):
     """Keys implied by the product id itself (nyk-123 -> nykaa:123)."""
     pre, _, rest = p.product_id.partition("-")
-    store = {"nyk": "nykaa", "fk": "flipkart", "pur": "purplle", "mac": "maccaron"}.get(pre)
+    store = {"nyk": "nykaa", "fk": "flipkart", "pur": "purplle", "mac": "maccaron", "tira": "tira"}.get(pre)
     keys = [f"{store}:{rest.upper() if store == 'flipkart' else rest}"] if store else []
     if p.store == "amazon" and p.asin:
         keys.append(f"amazon:{p.asin.upper()}")
@@ -116,6 +120,20 @@ def build_index(products):
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *a, **k):
         return None
+
+
+def _redirect_in_page(url, opener):
+    """The first known-store URL written into a JavaScript redirect page (first 64 KB)."""
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (SkinKareDealz price-check bot)"})
+    try:
+        with opener.open(req, timeout=10) as r:
+            body = r.read(65536).decode("utf-8", "replace")
+    except (urllib.error.URLError, OSError, ValueError):
+        return None
+    for u in URL_RE.findall(body):
+        if _store_of(urllib.parse.urlsplit(u).hostname or "") and url_keys(u):
+            return u
+    return None
 
 
 def expand_short_link(url, opener=None, hops=4):
@@ -137,6 +155,8 @@ def expand_short_link(url, opener=None, hops=4):
             loc = e.headers.get("Location") if 300 <= e.code < 400 else None
         except (urllib.error.URLError, OSError, ValueError):
             return None
+        if not loc and any(host == h or host.endswith("." + h) for h in BODY_REDIRECT_HOSTS):
+            loc = _redirect_in_page(url, opener)
         if not loc:
             return None
         url = urllib.parse.urljoin(url, loc)
@@ -429,6 +449,21 @@ def search_reply(cat, conn, text, now=None):
     return "Which one? Tap to compare prices across stores:", {"inline_keyboard": rows}
 
 
+def slug_words(url):
+    """Product name words from a store URL's slug ('the-ordinary-glycolic-acid-7-...-7609355'
+    -> 'the ordinary glycolic acid 7 ...'), or '' when the path has no readable name."""
+    path = urllib.parse.unquote(urllib.parse.urlsplit(url).path).rstrip("/")
+    parts = [x for x in path.split("/") if x and x.lower() not in ("p", "product", "products", "dp")]
+    slug = max(parts, key=lambda x: x.count("-"), default="")
+    if slug.count("-") < 2:
+        return ""
+    words = re.sub(r"-(\d{5,}|[a-z0-9]{10,})$", "", slug.lower(), flags=re.I)
+    words = re.sub(r"[-_]+", " ", words).strip()
+    # slugs drop the % sign: "minimalist 10 niacinamide" means 10% niacinamide
+    return re.sub(r"\b(\d{1,2}) (?=(?:niacinamide|salicylic|glycolic|lactic|azelaic|kojic|mandelic|"
+                  r"tranexamic|hyaluronic|retinol|vitamin|alpha|aha|bha|ceramide|zinc)\b)", r"\1% ", words)
+
+
 def answer(cat, conn, text, cfg, now=None, expand=expand_short_link):
     """Reply for one incoming message: (kind, product_id or None, html, reply_markup)."""
     text = (text or "").strip()
@@ -448,6 +483,17 @@ def answer(cat, conn, text, cfg, now=None, expand=expand_short_link):
             return "link", None, ("I can read links from Nykaa, Purplle, Flipkart, Tira, Maccaron "
                                   "and Amazon. If this is a share link, try opening it and sending the "
                                   "full page address."), None
+        words = slug_words(url)
+        hits = cat.matcher.search(words, limit=1) if words else []
+        # Suggest only when the link names a brand we track: a word match alone
+        # ("glycolic acid") can land on a different brand's product.
+        brand = cat.products[hits[0][1]].brand if hits else ""
+        btoks = [t for t in re.findall(r"[a-z0-9]+", brand.lower().replace("'", "")) if t != "the"]
+        if btoks and " ".join(btoks) in " " + words.replace("'", "") + " ":
+            body, kb = search_reply(cat, conn, words, now)
+            if kb:
+                return "link", None, ("I don't track that exact listing yet, but I've noted it. "
+                                      "The closest products I do track: " + body.split("? ", 1)[-1]), kb
         return "link", None, ("I don't track this product yet. I've noted it, and the most-asked "
                               "products get added first. You can also type its name to see what I have."), None
     body, kb = search_reply(cat, conn, text, now)
