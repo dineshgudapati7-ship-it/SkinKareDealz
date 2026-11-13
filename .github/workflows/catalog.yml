@@ -55,16 +55,39 @@ jobs:
           grep -vE '^\s+tira [a-z0-9-]+: top ' catalog.log > summary.txt || true
           { echo '```'; tail -60 summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Keep the catalogue files as a run artifact
+        # Saved before the commit, so a failed commit/push never loses hours of fetching
+        # (run #1 lost a complete 2.5 h Tira build that way). Download from the run page.
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: catalogue-${{ github.run_number }}
+          path: |
+            data/watchlist.csv
+            data/brands.csv
+            data/catalog/
+          retention-days: 14
+
       - name: Commit the catalogue to main
         # Also after a failure: the catalogue writes its files only once a store finishes (or stops at
         # a refusal), so whatever is on disk is complete for the stores that got that far.
         if: always()
         run: |
+          # Repo-level identity: `pull --rebase` re-creates the commit and needs it too.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/watchlist.csv data/brands.csv data/catalog/
           if git diff --cached --quiet; then echo "nothing new"; exit 0; fi
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -qm "Catalogue build ($STORES) run ${{ github.run_number }}"
-          git pull -q --rebase origin main
-          git push -q origin HEAD:main
+          git commit -qm "Catalogue build ($STORES) run ${{ github.run_number }}"
+          if git pull -q --rebase --autostash origin main && git push -q origin HEAD:main; then
+            echo "committed to main"
+          else
+            # main changed the same files meanwhile (e.g. watchlist.csv): keep the result on its own
+            # branch for a manual merge instead of losing it.
+            git rebase --abort 2>/dev/null || true
+            git push -qf origin "HEAD:refs/heads/catalog-run-${{ github.run_number }}"
+            echo "::warning::main moved and conflicted; catalogue pushed to branch catalog-run-${{ github.run_number }}"
+            exit 1
+          fi
         env:
           STORES: ${{ inputs.stores }}
