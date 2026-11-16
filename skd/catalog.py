@@ -4,6 +4,8 @@
     python -m skd.catalog --tiers 2 --brands "Minimalist,Plum"
     python -m skd.catalog --stores nykaa  # opt-in; needs scrapling, 1 request / 3 s
     python -m skd.catalog --stores flipkart,tira   # same method
+    python -m skd.catalog --stores brand  # official brand sites (brands.csv brand_site), plain HTTP,
+                                          # 1 request / 3 s per site, a site stops at its first 403/429
     (Tira: top 12 per brand page + every sitemap product of our brands, one page each;
      products already in the watchlist are skipped, so only the first run is long, ~2.5 h)
 
@@ -19,7 +21,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from .sources import flipkart, maccaron, nykaa, purplle, tira
+from .sources import brandsite, flipkart, maccaron, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
 WATCH_FIELDS = ["product_id", "name", "brand", "size", "store", "asin", "url",
@@ -31,6 +33,7 @@ NYKAA_FIELDS = ["tier", "brand", "nykaa_id", "sku", "name", "size", "type", "url
                 "in_stock"]
 FLIPKART_FIELDS = ["tier", "brand", "flipkart_id", "name", "size", "url", "mrp", "price", "in_stock"]
 TIRA_FIELDS = ["tier", "brand", "tira_id", "name", "size", "url", "mrp", "price", "in_stock"]
+BRAND_FIELDS = ["tier", "brand", "brand_id", "name", "size", "url", "mrp", "price", "in_stock", "ean"]
 NOT_ON_NYKAA = "-"          # nykaa_paths value: searched, no brand page found
 
 
@@ -89,7 +92,7 @@ def main(argv=None):
     stores = {s.strip() for s in a.stores.split(",")}
     builders = {"purplle": build_purplle, "maccaron": build_maccaron,
                 "nykaa": lambda b, d, l: build_nykaa(b, d, l, a.brands_file),
-                "flipkart": build_flipkart,
+                "flipkart": build_flipkart, "brand": build_brand,
                 "tira": lambda b, d, l: build_tira(b, d, l, a.brands_file,
                                                    None if a.no_tira_sitemap else a.watchlist)}
     snap_dir = Path(a.snapshot_dir)
@@ -334,6 +337,47 @@ def _tira_sitemap_products(brands, resolved, watchlist, delay, log, add):
             kept += 1
         if todo:
             log(f"  tira {b['brand']}: {kept} of {len(todo)} new sitemap products")
+
+
+def build_brand(brands, delay, log, site_factory=brandsite.Site):
+    """Every product of each brand's own store (brand_site column). Watchlist rows are
+    store=brand, product_id brd-<site>-<variant key>. A refusal stops that site only."""
+    snap_rows, watch_rows, missing = [], [], []
+    for b in brands:
+        site = brandsite.parse_site(b.get("brand_site"))
+        if not site:
+            missing.append(b["brand"])
+            continue
+        s = site_factory(*site, delay=delay)
+        seen = set()
+        try:
+            urls = [None] if s.kind == "feed" else s.sitemap_urls()
+            if s.kind != "feed":
+                log(f"{b['brand']}: {len(urls)} product pages in the sitemap")
+            for u in urls:
+                try:
+                    items = s.items(u)
+                except brandsite.Blocked:
+                    raise
+                except Exception as e:           # one bad page (timeout, 5xx) doesn't end the site
+                    log(f"  {b['brand']}: {u} failed ({e})")
+                    continue
+                for it in items:
+                    bid = f"{s.key}-{it['key']}"
+                    if bid in seen:
+                        continue
+                    seen.add(bid)
+                    snap_rows.append({"tier": b["tier"], "brand": b["brand"], "brand_id": bid, **it})
+                    watch_rows.append({"product_id": f"brd-{bid}", "name": it["name"], "brand": b["brand"],
+                                       "size": it["size"], "store": "brand", "url": it["url"],
+                                       "ean": it["ean"]})
+        except brandsite.Blocked as e:
+            log(f"{b['brand']}: STOP — {e}; not retrying ({len(seen)} products kept)")
+            if not seen:
+                missing.append(b["brand"])
+            continue
+        log(f"{b['brand']}: {len(seen)} products from {s.base}")
+    return snap_rows, watch_rows, BRAND_FIELDS, missing
 
 
 if __name__ == "__main__":

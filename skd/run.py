@@ -16,10 +16,10 @@ from datetime import datetime
 from pathlib import Path
 
 from . import db, deals, posts, telegram
-from .sources import flipkart, keepa, maccaron, manual, nykaa, purplle, tira
+from .sources import brandsite, flipkart, keepa, maccaron, manual, nykaa, purplle, tira
 
 ROOT = Path(__file__).resolve().parent.parent
-FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8, "tira-page": 26, "purplle-page": 26}   # older "current" prices are ignored
+FRESH_HOURS = {"keepa": 6, "manual": 24, "purplle": 6, "maccaron": 8, "nykaa": 25, "flipkart": 25, "tira": 8, "tira-page": 26, "purplle-page": 26, "brand": 26}   # older "current" prices are ignored
 
 
 def load_config(path):
@@ -342,10 +342,94 @@ def ingest_tira_pages(conn, watched, now, log, delay, max_pages, min_age_hours=T
         f"oldest price before this run: {age})")
 
 
+BRAND_PAGES = 300    # brand-site product pages per run (~15 min at 1 / 3 s), stalest first
+BRAND_PAGE_AGE = 20  # hours: a brand page is refetched only once its last price is older than this
+
+
+def _brand_sites(brands_file):
+    """{site key: (kind, base url)} from brands.csv -> brand_site."""
+    out = {}
+    if Path(brands_file).exists():
+        with open(brands_file, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                site = brandsite.parse_site(r.get("brand_site"))
+                if site:
+                    out[brandsite.site_key(site[1])] = site
+    return out
+
+
+def ingest_brand(conn, products, brands_file, now, log, delay=brandsite.MIN_DELAY,
+                 max_pages=BRAND_PAGES, min_age_hours=BRAND_PAGE_AGE, site_factory=brandsite.Site):
+    """Prices from the brands' own stores (store=brand, product_id brd-<site>-<key>).
+
+    A feed site is read whole (one request). Page and Shopify sites: the watched pages whose
+    last price is oldest, up to max_pages per run, each at most once per min_age_hours; one
+    page prices every size on it. A 403/429 stops that site for this run, not the others."""
+    # brd- ids only: a hand-added store=brand row (manual prices) has no site key to fetch with.
+    watched = [p for p in products if p.store == "brand" and p.url and p.product_id.startswith("brd-")]
+    if not watched:
+        log("brand: skipped (no brand-site products in watchlist)")
+        return
+    sites = _brand_sites(brands_file)
+    by_site = {}
+    for p in watched:
+        by_site.setdefault(p.product_id.split("-", 2)[1], []).append(p)
+    last = dict(conn.execute("SELECT product_id, MAX(ts) FROM price_checks "
+                             "WHERE source='brand' GROUP BY product_id").fetchall())
+    cutoff = now - min_age_hours * 3600
+    jobs = []                 # (staleness, site key, url or None, [products])
+    for key, prods in by_site.items():
+        if key not in sites:
+            log(f"brand: {key}: no brand_site in brands.csv, {len(prods)} products skipped")
+            continue
+        if sites[key][0] == "feed":
+            if min(last.get(p.product_id, 0) for p in prods) < cutoff:
+                jobs.append((0, key, None, prods))
+            continue
+        pages = {}
+        for p in prods:
+            pages.setdefault(p.url.split("?")[0], []).append(p)
+        for url, ps in pages.items():
+            age = min(last.get(p.product_id, 0) for p in ps)
+            if age < cutoff:
+                jobs.append((age, key, url, ps))
+    feeds = [j for j in jobs if j[2] is None]
+    jobs = feeds + sorted((j for j in jobs if j[2] is not None), key=lambda j: j[0])[:max_pages]
+    open_sites, stopped = {}, set()
+    priced = gone = fetched = 0
+    for _, key, url, ps in jobs:
+        if key in stopped:
+            continue
+        s = open_sites.get(key) or open_sites.setdefault(key, site_factory(*sites[key], delay=delay))
+        try:
+            items = s.items(url)
+        except brandsite.Blocked as e:
+            log(f"brand: {key}: STOP — {e}; other sites continue")
+            stopped.add(key)
+            continue
+        except Exception as e:
+            log(f"brand: {url or key} failed ({e})")
+            continue
+        fetched += 1
+        got = {f"brd-{key}-{it['key']}": it for it in items}
+        for p in ps:
+            it = got.get(p.product_id)
+            if not it:                  # page gone, or this size no longer offered
+                db.record_price(conn, p.product_id, now, None, False, "brand")
+                gone += 1
+                continue
+            ok = it["in_stock"] and it["price"] is not None
+            db.record_price(conn, p.product_id, now, it["price"] if ok else None, ok, "brand")
+            priced += 1
+        conn.commit()
+    log(f"brand: priced {priced}, {gone} gone, from {fetched} fetches "
+        f"({len(jobs)} due, {len(watched)} watched; stopped: {', '.join(sorted(stopped)) or 'none'})")
+
+
 def latest_check(conn, product_id, now):
     row = conn.execute(
         "SELECT ts, price, in_stock, source FROM price_checks WHERE product_id=? "
-        "AND source IN ('keepa','manual','purplle-page','maccaron','nykaa','flipkart','tira','tira-page') "
+        "AND source IN ('keepa','manual','purplle-page','maccaron','nykaa','flipkart','tira','tira-page','brand') "
         "ORDER BY ts DESC LIMIT 1", (product_id,)).fetchone()
     if not row or now - row[0] > FRESH_HOURS[row[3]] * 3600:
         return None
@@ -405,6 +489,9 @@ def main(argv=None):
                     help="Tira product pages per run, stalest first (default %(default)s; 0 = brand pages only)")
     ap.add_argument("--tira-page-age", type=float, default=TIRA_PAGE_AGE,
                     help="refetch a Tira product page only if its price is older than N hours (default %(default)s)")
+    ap.add_argument("--no-brand", action="store_true", help="skip the brand-site price fetch")
+    ap.add_argument("--brand-pages", type=int, default=BRAND_PAGES,
+                    help="brand-site product pages per run, stalest first (default %(default)s)")
     ap.add_argument("--now", type=int, help=argparse.SUPPRESS)  # for tests
     a = ap.parse_args(argv)
     log = lambda m: print(m, file=sys.stderr)
@@ -433,6 +520,8 @@ def main(argv=None):
         ingest_flipkart(conn, products, now, log, a.nykaa_delay, every_hours=a.flipkart_every)
     if not a.no_tira:
         ingest_tira(conn, products, a.brands_file, now, log, a.nykaa_delay, a.tira_pages, a.tira_page_age)
+    if not a.no_brand:
+        ingest_brand(conn, products, a.brands_file, now, log, max_pages=a.brand_pages)
 
     can_telegram = cfg.get("telegram_token") and cfg.get("telegram_chat_id")
     wa_lines, posted = [], 0

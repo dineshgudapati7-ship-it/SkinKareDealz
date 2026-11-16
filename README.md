@@ -80,9 +80,31 @@ python -m skd.catalog --stores flipkart,tira
   - **Product sitemaps** (~65 files, ~27k products) find the rest: URLs that start with a brand's slug are opened one product page each, and the page must confirm the brand. Pages are ~1.4 MB, so the first full catalogue run takes about 2.5 h (~2,700 products for our brands). Later runs skip URLs already in the watchlist. `--no-tira-sitemap` = brand pages only.
   - **Price tracking:** every `skd.run` reads the brand pages (~40 requests), then up to `--tira-pages` product pages (default 150, about 9 min) for the watched Tira products whose price is oldest, recorded as `source=tira-page` (counts as current for 26 h). A product priced in the last 20 h is skipped (`--tira-page-age`), so each page is fetched about once a day at most, and the whole list is refreshed in rotation; a full rotation needs about 2,700 pages, about 2.5 h of fetching. A delisted product is recorded out of stock. Any refusal stops Tira for that run. `--no-tira` skips both.
 
+## Brand sites (`skd/sources/brandsite.py`)
+`data/brands.csv` → `brand_site` = `<kind>:<base url>`. `-` means checked and no usable Indian D2C store (Cetaphil, CeraVe and other pharmacy brands; Sebamed's site has no shop; Clinique answered 403; La Shield timed out). Blank means not checked yet.
+
+```
+python -m skd.catalog --stores brand     # ~1.7 h the first time (The Body Shop has ~1,000 pages)
+```
+| kind | sites | where the price comes from |
+|---|---|---|
+| `feed` | WOW | `/feeds/product-list-csv`, a product feed the site publishes for machines (one request) |
+| `page` | The Body Shop, Kama Ayurveda, Forest Essentials | product HTML: Next.js variant data, then JSON-LD, then `itemprop` microdata |
+| `shopify` | Pilgrim (+ 19 more that refuse, below) | `/products/<handle>.js`, every variant |
+
+Products are found from each site's sitemap, robots.txt is checked per URL, and requests are spaced at least 3 s apart. A site stops at its first 403/429 for that run; the other sites carry on. Plain HTTP with an honest User-Agent: no browser impersonation, retries or proxies.
+
+**Most Shopify brand stores refuse:** Minimalist, Derma Co, Dot & Key, Biotique, Plum, Foxtale, Aqualogica, mCaffeine, Re'equil, Deconstruct, Kiehl's, Conscious Chemist, Dr. Sheth's, Earth Rhythm, Fixderma, Just Herbs, Bella Vita, Juicy Chemistry and Khadi each answered **429 to the first product request**, both JSON and HTML (2026-11-13). robots.txt allows those pages, so this is bot protection. They stay in `brand_site`, so each catalogue build tries about 4 requests per site and notices if one opens up.
+
+Checked against the live pages in Chrome (2026-11-13): WOW ₹399, Kama ₹1250, Forest Essentials ₹2,095 and The Body Shop ₹1,068 / ₹895 all matched. Two traps, both covered by tests:
+- **The Body Shop:** a variant's `price` is its MRP. The checkout price is `special_price` while its dates are current (₹1,335 vs ₹1,068 on the Trio). Its JSON-LD said "InStock" on a product the page showed as Out of Stock, so variant data wins. A JSON-LD price range (several sizes) is never used as one price.
+- **Windows TLS:** Python's Windows trust store reports "certificate has expired" for about 15 of these sites, while curl and Chrome accept them. The fetcher uses certifi's CA bundle when it's installed (it comes with Scrapling).
+
+Rows are `store=brand`, `brd-<site>-<variant>` (e.g. `brd-thebodyshop-4956`, `brd-buywow-wow_fw_retinol`), with EAN where the site gives one. `skd.run` prices them as `source=brand`: WOW's feed whenever it's older than 20 h, and otherwise up to `--brand-pages` (300, ~15 min) of the stalest pages, each at most once per 20 h; one page prices all its sizes. A size that disappears from its page is recorded out of stock. `--no-brand` skips this.
+
 ## Data sources
 - **Amazon:** the Keepa API. On the first run it backfills about 90 days of price history, so deal detection works from day one.
-- **Brand sites:** not scraped. They block automated requests with HTTP 429. Use network feeds or manual prices for these.
+- **Brand sites:** read where they serve a plain, polite client; see below.
 
 ## Price-check bot (`skd/bot.py`)
 People DM the bot a product link from Nykaa, Purplle, Flipkart, Tira, Maccaron or Amazon, or type a product name. The bot replies with the current price of **that exact product** (same size and pack) on every store we track, cheapest first. Typed names get up to 5 buttons to pick from.

@@ -153,7 +153,7 @@ class Match:
 
 CATALOG_IDS = {"nykaa": ("nyk", "nykaa_id"), "flipkart": ("fk", "flipkart_id"),
                "tira": ("tira", "tira_id"), "purplle": ("pur", "purplle_id"),
-               "maccaron": ("mac", "maccaron_id")}
+               "maccaron": ("mac", "maccaron_id"), "brand": ("brd", "brand_id")}
 
 
 def load_mrp(catalog_dir):
