@@ -13,6 +13,7 @@ Prices come from prices.db, which the GitHub Actions run rewrites every 3 h on t
 origin/data every --refresh-hours, so it never touches the tracker's DB.
 """
 import argparse
+import csv
 from dataclasses import dataclass
 import html
 import os
@@ -27,6 +28,7 @@ import urllib.request
 from pathlib import Path
 
 from . import db, match, posts, run, telegram
+from .sources import brandsite
 
 ROOT = run.ROOT
 STORE_NAMES = {**posts.STORE_NAMES, "tira": "Tira", "maccaron": "Maccaron"}
@@ -50,26 +52,56 @@ CREATE TABLE IF NOT EXISTS queries (
 );
 """
 
-HELP = ("Send me a skincare product link from Nykaa, Purplle, Flipkart, Tira, Maccaron or "
-        "Amazon, or just type a product name (e.g. <i>minimalist niacinamide 10% 30ml</i>).\n\n"
+HELP = ("Send me a skincare product link from Nykaa, Purplle, Flipkart, Tira, Maccaron, "
+        "Amazon or a brand's own store, or just type a product name (e.g. <i>minimalist niacinamide 10% 30ml</i>).\n\n"
         "I'll show the current price of that exact product (same size) on every store I track, "
         "cheapest first.")
 
 
 # ---------- links -> product ids ----------
 
-def _store_of(host):
-    host = host.lower().removeprefix("www.").removeprefix("m.")
-    for h, store in STORE_HOSTS.items():
+def _bare(host):
+    return (host or "").lower().removeprefix("www.").removeprefix("m.")
+
+
+def _brand_host(host, brand_hosts):
+    """The brand_hosts entry this host belongs to (subdomains included), or None."""
+    host = _bare(host)
+    for h in brand_hosts:
         if host == h or host.endswith("." + h):
-            return store
+            return h
     return None
 
 
-def url_keys(url):
+def _store_of(host, brand_hosts=()):
+    host = _bare(host)
+    for h, store in STORE_HOSTS.items():
+        if host == h or host.endswith("." + h):
+            return store
+    return "brand" if _brand_host(host, brand_hosts) else None
+
+
+def load_brand_hosts(brands_file, products=()):
+    """{bare host: brand name} for the brands' own stores: every brands.csv brand_site,
+    plus the host of any store=brand watchlist row (hand-added ones included)."""
+    out = {}
+    for p in products:
+        if p.store == "brand" and p.url:
+            out.setdefault(_bare(urllib.parse.urlsplit(p.url).hostname), p.brand)
+    if Path(brands_file).exists():
+        with open(brands_file, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                site = brandsite.parse_site(r.get("brand_site"))
+                if site:
+                    out[_bare(urllib.parse.urlsplit(site[1]).hostname)] = r["brand"]
+    out.pop("", None)
+    return out
+
+
+def url_keys(url, brand_hosts=()):
     """Lookup keys for a store URL, most specific first (e.g. ['nykaa:15020676', 'nykaa:15022069'])."""
     u = urllib.parse.urlsplit(url.strip())
-    store = _store_of(u.hostname or "")
+    store = _store_of(u.hostname or "", brand_hosts)
     if not store:
         return []
     q = urllib.parse.parse_qs(u.query)
@@ -96,6 +128,14 @@ def url_keys(url):
             keys += [f"tira:{d}" for d in re.findall(r"-(\d{5,})$", m.group(1))]
     elif store == "maccaron":
         keys += [f"maccaron:{m}" for m in re.findall(r"/products/[^/]+/(\d+)$", path)]
+    elif store == "brand":
+        # The page itself: host + path. Shopify also serves /collections/<c>/products/<h>,
+        # and ?variant=<id> picks the size; without it the page opens on its first variant,
+        # which is the first row build_index sees for that page.
+        p = path.lower()
+        i = p.find("/products/")
+        page = f"brand:{_brand_host(u.hostname, brand_hosts)}{p[i:] if i >= 0 else p}"
+        keys += [f"{page}?variant={v}" for v in q.get("variant", []) if v.isdigit()] + [page]
     return keys
 
 
@@ -109,10 +149,10 @@ def _id_keys(p):
     return keys
 
 
-def build_index(products):
+def build_index(products, brand_hosts=()):
     idx = {}
     for p in products:
-        for k in _id_keys(p) + url_keys(p.url):
+        for k in _id_keys(p) + url_keys(p.url, brand_hosts):
             idx.setdefault(k, p.product_id)
     return idx
 
@@ -265,11 +305,15 @@ class Catalog:
         products = run.load_watchlist(self.path)
         self.products = {p.product_id: p for p in products}
         self.matcher = match.Matcher(products, match.load_mrp(self.path.parent / "catalog"))
-        self.index = build_index(products)
+        self.brand_hosts = load_brand_hosts(self.path.parent / "brands.csv", products)
+        self.index = build_index(products, self.brand_hosts)
         self.mtime = mtime
 
+    def store_of(self, host):
+        return _store_of(host, self.brand_hosts)
+
     def lookup(self, url):
-        for k in url_keys(url):
+        for k in url_keys(url, self.brand_hosts):
             if k in self.index:
                 return self.index[k]
         return None
@@ -449,13 +493,14 @@ def search_reply(cat, conn, text, now=None):
     return "Which one? Tap to compare prices across stores:", {"inline_keyboard": rows}
 
 
-def slug_words(url):
+def slug_words(url, min_dashes=2):
     """Product name words from a store URL's slug ('the-ordinary-glycolic-acid-7-...-7609355'
     -> 'the ordinary glycolic acid 7 ...'), or '' when the path has no readable name."""
     path = urllib.parse.unquote(urllib.parse.urlsplit(url).path).rstrip("/")
+    path = re.sub(r"\.html?$", "", path, flags=re.I)          # Kama, Forest Essentials: /<slug>.html
     parts = [x for x in path.split("/") if x and x.lower() not in ("p", "product", "products", "dp")]
     slug = max(parts, key=lambda x: x.count("-"), default="")
-    if slug.count("-") < 2:
+    if slug.count("-") < min_dashes:
         return ""
     words = re.sub(r"-(\d{5,}|[a-z0-9]{10,})$", "", slug.lower(), flags=re.I)
     words = re.sub(r"[-_]+", " ", words).strip()
@@ -474,16 +519,26 @@ def answer(cat, conn, text, cfg, now=None, expand=expand_short_link):
     if urls:
         url = urls[0].rstrip(".,)")
         host = (urllib.parse.urlsplit(url).hostname or "").lower()
-        if not _store_of(host) or host.startswith("dl."):
+        if not cat.store_of(host) or host.startswith("dl."):
             url = expand(url) or url
         pid = cat.lookup(url)
         if pid:
             return "link", pid, compare(cat, conn, pid, cfg, now), None
-        if not _store_of(urllib.parse.urlsplit(url).hostname or ""):
-            return "link", None, ("I can read links from Nykaa, Purplle, Flipkart, Tira, Maccaron "
-                                  "and Amazon. If this is a share link, try opening it and sending the "
-                                  "full page address."), None
-        words = slug_words(url)
+        host = urllib.parse.urlsplit(url).hostname or ""
+        store = cat.store_of(host)
+        if not store:
+            return "link", None, ("I can read links from Nykaa, Purplle, Flipkart, Tira, Maccaron, "
+                                  "Amazon and the brands' own stores I track. If this is a share link, "
+                                  "try opening it and sending the full page address."), None
+        if store == "brand":
+            # Brand-site slugs rarely repeat the brand ('/products/2-hyaluronic-acid'), but the
+            # domain says whose store it is, so the brand check below still works.
+            brand = cat.brand_hosts[_brand_host(host, cat.brand_hosts)]
+            bwords = " ".join(re.findall(r"[a-z0-9]+", brand.lower().replace("'", "")))
+            words = slug_words(url, min_dashes=0)
+            words = f"{bwords} {words}" if words and f" {bwords} " not in f" {words} " else words
+        else:
+            words = slug_words(url)
         hits = cat.matcher.search(words, limit=1) if words else []
         # Suggest only when the link names a brand we track: a word match alone
         # ("glycolic acid") can land on a different brand's product.

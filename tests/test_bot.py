@@ -103,6 +103,80 @@ class Links(unittest.TestCase):
         self.assertIsNone(bot.expand_short_link("https://bit.ly/zzz", opener=o))   # not a store shortener
 
 
+BRAND_WATCHLIST = """product_id,name,brand,size,store,asin,url,affiliate_url,key_ingredient,skin_types,ean
+brd-beminimalist-45879886807201,Hyaluronic + PGA 2% Face Serum,Minimalist,30ml,brand,,https://beminimalist.co/products/2-hyaluronic-acid?variant=45879886807201,,,,
+brd-beminimalist-45879886839969,Hyaluronic + PGA 2% Face Serum,Minimalist,10ml,brand,,https://beminimalist.co/products/2-hyaluronic-acid?variant=45879886839969,,,,
+pur-9,Minimalist 2% Hyaluronic Acid + PGA Face Serum,Minimalist,30 ml,purplle,,https://www.purplle.com/product/9,,,,
+brd-kamaayurveda-hc1,Hand Cream,Kama Ayurveda,,brand,,https://www.kamaayurveda.com/in/hand-cream.html,,,,
+brd-thebodyshop-tbscombo54,Almond Milk & Shea Creamy Cleansing Bar Duo,The Body Shop,,brand,,https://www.thebodyshop.in/almond-milk-shea-creamy-cleansing-bar-duo-1pc/p/tbscombo54,,,,
+pur-1,Plum Green Tea Oil-Free Moisturizer,Plum,50 ml,purplle,,https://www.purplle.com/plum-green-tea-oil-free-moisturizer-50ml,,,,
+"""
+# Plum's store is in brands.csv but none of its products are tracked from it yet.
+BRANDS_CSV = """tier,brand,brand_site
+1,Minimalist,shopify:https://beminimalist.co
+2,Plum,shopify:https://plumgoodness.com
+3,Kama Ayurveda,page:https://www.kamaayurveda.com
+4,Cetaphil,-
+"""
+
+
+class BrandLinks(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        (self.tmp / "watchlist.csv").write_text(BRAND_WATCHLIST, encoding="utf-8")
+        (self.tmp / "brands.csv").write_text(BRANDS_CSV, encoding="utf-8")
+        self.cat = bot.Catalog(self.tmp / "watchlist.csv")
+        self.conn = db.connect(self.tmp / "prices.db")
+        db.record_price(self.conn, "brd-beminimalist-45879886807201", NOW - 3600, 549, True, "brand")
+        db.record_price(self.conn, "brd-beminimalist-45879886839969", NOW - 3600, 249, True, "brand")
+        db.record_price(self.conn, "pur-9", NOW - 3600, 520, True, "purplle-page")
+        self.conn.commit()
+
+    def ask(self, text):
+        return bot.answer(self.cat, self.conn, text, CFG, NOW, expand=lambda u: None)
+
+    def test_hosts_come_from_brands_csv_and_watchlist(self):
+        self.assertEqual(self.cat.brand_hosts, {"beminimalist.co": "Minimalist", "plumgoodness.com": "Plum",
+                                                "kamaayurveda.com": "Kama Ayurveda",
+                                                "thebodyshop.in": "The Body Shop"})
+
+    def test_url_keys(self):
+        hosts = self.cat.brand_hosts
+        self.assertEqual(bot.url_keys("https://www.beminimalist.co/collections/serums/products/2-Hyaluronic-Acid/"
+                                      "?variant=45879886839969&utm_source=ig", hosts),
+                         ["brand:beminimalist.co/products/2-hyaluronic-acid?variant=45879886839969",
+                          "brand:beminimalist.co/products/2-hyaluronic-acid"])
+        self.assertEqual(bot.url_keys("https://m.kamaayurveda.com/in/hand-cream.html?gclid=x", hosts),
+                         ["brand:kamaayurveda.com/in/hand-cream.html"])
+        self.assertEqual(bot.url_keys("https://beminimalist.co.evil.example/products/x", hosts), [])
+
+    def test_variant_link_picks_that_size(self):
+        kind, pid, body, _ = self.ask("https://beminimalist.co/products/2-hyaluronic-acid?variant=45879886839969")
+        self.assertEqual((kind, pid), ("link", "brd-beminimalist-45879886839969"))
+        self.assertIn("₹249", body)
+        self.assertNotIn("₹520", body)                     # the 30 ml on Purplle is another size
+
+    def test_link_without_variant_is_the_pages_first_variant(self):
+        kind, pid, body, _ = self.ask("https://www.beminimalist.co/products/2-hyaluronic-acid?utm_source=ig")
+        self.assertEqual(pid, "brd-beminimalist-45879886807201")
+        self.assertIn("Cheapest: <b>₹520 on Purplle</b>", body)
+        self.assertIn("brand site</a> — ₹549", body)
+
+    def test_page_sites(self):
+        self.assertEqual(self.ask("https://www.kamaayurveda.com/in/hand-cream.html")[1], "brd-kamaayurveda-hc1")
+        self.assertEqual(self.ask("https://www.thebodyshop.in/almond-milk-shea-creamy-cleansing-bar-duo-1pc"
+                                  "/p/tbscombo54?src=share")[1], "brd-thebodyshop-tbscombo54")
+
+    def test_untracked_brand_link_suggests_by_brand_from_domain(self):
+        kind, pid, body, kb = self.ask("https://plumgoodness.com/products/green-tea-oil-free-moisturizer")
+        self.assertEqual((kind, pid), ("link", None))
+        self.assertIn("don't track that exact listing", body)
+        self.assertEqual(kb["inline_keyboard"][0][0]["callback_data"], "p:pur-1")
+
+    def test_brand_without_a_store_is_not_a_store(self):
+        self.assertIn("I can read links", self.ask("https://www.cetaphil.in/products/x")[2])
+
+
 class Replies(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
@@ -164,6 +238,10 @@ class Replies(unittest.TestCase):
         self.assertEqual(kind, "search")
         self.assertEqual(len(kb["inline_keyboard"]), 1)    # four stores, one product
         self.assertTrue(kb["inline_keyboard"][0][0]["callback_data"].startswith("p:"))
+
+    def test_brand_site_link_without_brands_csv(self):
+        # No brands.csv and no store=brand rows: a brand's own domain is just another website.
+        self.assertIn("I can read links", self.ask("https://beminimalist.co/products/2-hyaluronic-acid")[2])
 
     def test_greeting_gets_help(self):
         self.assertEqual(self.ask("hi")[0], "help")
